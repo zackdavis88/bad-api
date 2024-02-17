@@ -1,9 +1,11 @@
 import express, { Express } from 'express';
-import { configureCatchAllRoute } from 'src/routes';
+import { configureCatchAllRoute, configureUserRoutes } from 'src/routes';
 
 const configureRoutes = (app: Express) => {
   const router = express.Router();
-  configureCatchAllRoute(router);
+
+  configureUserRoutes(router);
+  configureCatchAllRoute(router); // This catch-all route must always be last.
 
   app.use(router);
 };
