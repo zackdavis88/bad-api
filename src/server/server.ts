@@ -1,14 +1,16 @@
 import fs from 'fs';
-import https from 'https';
-import http from 'http';
+import https, { Server as HttpsServer } from 'https';
+import http, { Server as HttpServer } from 'http';
 import express from 'express';
 import morgan from 'morgan';
 import methodOverride from 'method-override';
 import { PORT } from 'src/config/app';
-import { initializeModelsAndSync } from 'src/models';
-import { Sequelize, BaseError } from 'sequelize';
-import { configureResponseHandlers } from './utils';
-import { DB_USERNAME, DB_PASSWORD, DB_HOSTNAME, DB_PORT, DB_NAME } from 'src/config/db';
+import { BaseError } from 'sequelize';
+import {
+  configureResponseHandlers,
+  configureRoutes,
+  initializeDatabaseConnection,
+} from './utils';
 
 // Extend the types availble on the Express request/response objects.
 declare global {
@@ -26,14 +28,9 @@ declare global {
   }
 }
 
-const sequelize = new Sequelize(
-  `postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOSTNAME}:${DB_PORT}/${DB_NAME}`,
-  {
-    logging: false,
-  },
-);
-
-initializeModelsAndSync(sequelize).then(() => {
+// Connect to the database before starting the server.
+initializeDatabaseConnection().then(() => {
+  // Create and configure an express app.
   const app = express();
   app.use(
     express.urlencoded({
@@ -44,23 +41,14 @@ initializeModelsAndSync(sequelize).then(() => {
   app.use(methodOverride());
   app.use(morgan('dev'));
 
-  // Setup custom response handlers for the app.
-  app.use((_req, res, next) => {
-    configureResponseHandlers(res);
-    next();
-  });
+  // Configure custom response handlers for the app.
+  app.use(configureResponseHandlers);
 
-  // All API routes.
-  const apiRouter = express.Router();
-  app.use(apiRouter);
+  // Configure all API routes.
+  configureRoutes(app);
 
-  // Catch-all for routes that do not exist.
-  app.use('*', (_req, res) => {
-    return res.notFoundError('API route not found');
-  });
-
-  // Build an HTTP or HTTPS server depending on configs available.
-  let server;
+  // Create a HTTP or HTTPS server depending on configs available.
+  let server: HttpsServer | HttpServer;
   const certExists = fs.existsSync('../config/ssl/cert.pem');
   const keyExists = fs.existsSync('../config/ssl/key.pem');
   const useHttps = certExists && keyExists;
@@ -76,6 +64,7 @@ initializeModelsAndSync(sequelize).then(() => {
     server = http.createServer(app);
   }
 
+  // Start the server.
   server.listen(PORT, () => {
     console.log(
       'Bad JIRA listening on port %s using %s protocol',

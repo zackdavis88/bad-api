@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Response, Request, NextFunction } from 'express';
 import { BaseError } from 'sequelize';
 
 export enum ErrorTypes {
@@ -94,11 +94,18 @@ const success = (res: Response) => {
   };
 };
 
-export const configureResponseHandlers = (res: Response) => {
+const configureResponseHandlersMiddleware = (
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   res.fatalError = fatalError(res);
   res.validationError = validationError(res);
   res.notFoundError = notFoundError(res);
   res.authenticationError = authenticationError(res);
   res.authorizationError = authorizationError(res);
   res.success = success(res);
+  next();
 };
+
+export default configureResponseHandlersMiddleware;
