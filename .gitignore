@@ -128,3 +128,8 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Private config files
+src/config/db.ts
+src/config/auth.ts
+src/config/ssl
