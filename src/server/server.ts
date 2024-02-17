@@ -6,8 +6,25 @@ import morgan from 'morgan';
 import methodOverride from 'method-override';
 import { PORT } from 'src/config/app';
 import { initializeModelsAndSync } from 'src/models';
-import { Sequelize } from 'sequelize';
+import { Sequelize, BaseError } from 'sequelize';
+import { configureResponseHandlers } from './utils';
 import { DB_USERNAME, DB_PASSWORD, DB_HOSTNAME, DB_PORT, DB_NAME } from 'src/config/db';
+
+// Extend the types availble on the Express request/response objects.
+declare global {
+  /* eslint-disable-next-line @typescript-eslint/no-namespace */
+  namespace Express {
+    interface Response {
+      fatalError: (message: string, errorDetails?: BaseError) => Response | undefined;
+      validationError: (message: string) => Response | undefined;
+      notFoundError: (message: string) => Response | undefined;
+      authenticationError: (message: string) => Response | undefined;
+      authorizationError: (message: string) => Response | undefined;
+      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+      success: (message: string, data?: any) => Response | undefined;
+    }
+  }
+}
 
 const sequelize = new Sequelize(
   `postgres://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOSTNAME}:${DB_PORT}/${DB_NAME}`,
@@ -28,19 +45,19 @@ initializeModelsAndSync(sequelize).then(() => {
   app.use(morgan('dev'));
 
   // Setup custom response handlers for the app.
-  // app.use((_req, res, next) => {
-  //   configureResponseHandlers(res);
-  //   next();
-  // });
+  app.use((_req, res, next) => {
+    configureResponseHandlers(res);
+    next();
+  });
 
   // All API routes.
   const apiRouter = express.Router();
   app.use(apiRouter);
 
   // Catch-all for routes that do not exist.
-  // app.use('*', (_req, res) => {
-  //   return res.notFoundError('API route not found');
-  // });
+  app.use('*', (_req, res) => {
+    return res.notFoundError('API route not found');
+  });
 
   // Build an HTTP or HTTPS server depending on configs available.
   let server;
