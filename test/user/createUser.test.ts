@@ -1,4 +1,3 @@
-import assert from 'assert';
 import { TestHelper } from '../utils';
 import { ErrorTypes } from '../../src/server/utils/configureResponseHandlers';
 import request from 'supertest';
@@ -186,11 +185,11 @@ describe('User Create', () => {
           }
 
           const { message, user } = res.body;
-          assert.strictEqual(message, 'user has been successfully created');
-          assert(user);
-          assert.strictEqual(user.username, String(payload.username).toLowerCase());
-          assert.strictEqual(user.displayName, payload.username);
-          assert(user.createdOn);
+          expect(message).toBe('user has been successfully created');
+          expect(user).toBeTruthy();
+          expect(user.username).toBe(String(payload.username).toLowerCase());
+          expect(user.displayName).toBe(payload.username);
+          expect(user.createdOn).toBeTruthy();
           testHelper.addTestUsername(user.username);
           done();
         });

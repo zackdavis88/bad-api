@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { Sequelize, Utils, UUIDV4 } from 'sequelize';
+import jwt from 'jsonwebtoken';
 import {
   DB_USERNAME,
   DB_PASSWORD,
@@ -7,8 +8,16 @@ import {
   DB_PORT,
   DB_NAME,
 } from '../../src/config/db';
+import { SECRET } from '../../src/config/auth';
 import { PORT } from '../../src/config/app';
 import { initializeModels, User } from '../../src/models';
+
+interface TokenDataOverride {
+  id?: string;
+  apiKey?: string;
+  iat?: number;
+  exp?: number;
+}
 
 export class TestHelper {
   sequelize: Sequelize;
@@ -66,5 +75,27 @@ export class TestHelper {
 
     this.addTestUsername(testUser.username);
     return testUser;
+  }
+
+  generateToken(
+    user: User,
+    dataOverride: TokenDataOverride | string = {},
+    secretOverride?: string,
+  ) {
+    const tokenData = {
+      id: user.id,
+      apiKey: user.apiKey,
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 3,
+    };
+
+    let token: string;
+    if (typeof dataOverride === 'string') {
+      token = jwt.sign(dataOverride, secretOverride || SECRET);
+    } else {
+      token = jwt.sign({ ...tokenData, ...dataOverride }, secretOverride || SECRET);
+    }
+
+    return token;
   }
 }
