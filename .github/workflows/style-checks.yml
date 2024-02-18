@@ -1,5 +1,5 @@
 name: PR Checks
-run-name: PR checks for ${{ github.ref }}
+run-name: PR Checks
 on: [push]
 jobs:
   Style-Check:
@@ -9,7 +9,9 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
       - run: echo "The ${{ github.repository }} repository has been cloned to the runner and is on branch ${{ github.ref }}."
-      - name: Get status
-        run: |
-          git status
+      - name: Install NodeJS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+      - run: node -v
       - run: echo "🍏 This job's status is ${{ job.status }}."
