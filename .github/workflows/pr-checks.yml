@@ -1,6 +1,6 @@
 name: PR Checks
 run-name: PR Checks
-on: [push]
+on: [pull_request]
 jobs:
   style-check:
     runs-on: ubuntu-latest
