@@ -2,47 +2,9 @@ name: PR Checks
 run-name: PR Checks
 on: [pull_request]
 jobs:
-  style-check:
+  pr-checks:
     runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - name: Install NodeJS
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-      - name: Install node_modules
-        run: npm install
-      - name: Run eslint
-        run: npx eslint src
-  build-check:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - name: Install NodeJS
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18
-      - name: Install node_modules
-        run: npm install
-      - name: Create dummy db config file
-        run: |
-          touch src/config/db.ts && echo "
-          export const DB_USERNAME = 'dummy';
-          export const DB_PASSWORD = 'dummy';
-          export const DB_HOSTNAME = 'localhost';
-          export const DB_PORT = '5432';
-          export const DB_NAME = 'dummy';" > src/config/db.ts
-      - name: Create dummy auth config file
-        run: |
-          touch src/config/auth.ts && echo "
-          export const SECRET = 'dummy_secret';
-          export const SALT_ROUNDS = 10;" > src/config/auth.ts
-      - name: Build app
-        run: npm run build
-  test-check:
-    runs-on: ubuntu-latest
+    # Add postgres service for integration testing
     services:
       # Label used to access the service container
       postgres:
@@ -61,14 +23,25 @@ jobs:
           # Maps tcp port 5432 on service container to the host
           - 5432:5432
     steps:
+      # Checkout the code for the branch
       - name: Check out repository code
         uses: actions/checkout@v4
+
+      # Install NodeJS
       - name: Install NodeJS
         uses: actions/setup-node@v4
         with:
           node-version: 18
+      
+      # Install node_modules
       - name: Install node_modules
         run: npm install
+
+      # Ensure linter passes
+      - name: Run eslint
+        run: npx eslint src
+
+      # Inject configs that are not tracked in git
       - name: Create db config file
         run: |
           touch src/config/db.ts && echo "
@@ -82,7 +55,15 @@ jobs:
           touch src/config/auth.ts && echo "
           export const SECRET = 'super_secret_secret';
           export const SALT_ROUNDS = 7;" > src/config/auth.ts
+
+      # Ensure the app can be built
+      - name: Build app
+        run: npm run build
+
+      # Start the server and wait for it to start listening
       - name: Start server and wait for it to be listening
         run: npm run start:prod & timeout 30 sh -c 'until nc -z $0 $1; do sleep 1; done' localhost 3000
+
+      # Run integration tests
       - name: Run integration tests
         run: npx jest --verbose --detectOpenHandles
