@@ -8,12 +8,28 @@ jobs:
       - run: echo "This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - name: Check out repository code
         uses: actions/checkout@v4
-      - run: echo "The ${{ github.repository }} repository has been cloned to the runner and is on branch ${{ github.ref }}."
       - name: Install NodeJS
         uses: actions/setup-node@v4
         with:
           node-version: 18
       - name: Install node_modules
         run: npm install
+      - name: Create dummy db config file
+        run: touch src/config/db.ts
+      - name: Populate dummy db config file
+        run: |
+          echo "
+          export const DB_USERNAME = 'dummy';\n
+          export const DB_PASSWORD = 'dummy';\n
+          export const DB_HOSTNAME = 'localhost';\n
+          export const DB_PORT = '5432';\n
+          export const DB_NAME = 'dummy';\n" > src/config/db.ts
+      - name: Create dummy auth config file
+        run: touch src/config/auth.ts
+      - name: Populate dummy auth config file
+        run: |
+          echo "
+          export const SECRET = 'dummy_secret';\n
+          export const SALT_ROUNDS = 10;\n"
       - name: Build app
         run: npm run build
