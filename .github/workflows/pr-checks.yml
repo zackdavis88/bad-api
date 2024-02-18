@@ -2,7 +2,7 @@ name: PR Checks
 run-name: PR Checks
 on: [push]
 jobs:
-  Lint:
+  style-check:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -15,7 +15,7 @@ jobs:
         run: npm install
       - name: Run eslint
         run: npx eslint src
-  Build:
+  build-check:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
