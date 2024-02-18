@@ -11,11 +11,15 @@ import {
   configureRoutes,
   initializeDatabaseConnection,
 } from './utils';
+import { User } from 'src/models';
 
 // Extend the types availble on the Express request/response objects.
 declare global {
   /* eslint-disable-next-line @typescript-eslint/no-namespace */
   namespace Express {
+    interface Request {
+      user: User;
+    }
     interface Response {
       fatalError: (message: string, errorDetails?: BaseError) => Response | undefined;
       validationError: (message: string) => Response | undefined;

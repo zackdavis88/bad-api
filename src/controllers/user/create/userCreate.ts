@@ -1,9 +1,7 @@
 import { User } from 'src/models';
+import { UserData } from 'src/server/types';
 
-type UserCreate = (
-  username: string,
-  password: string,
-) => Promise<{ displayName: string; username: string; createdOn: Date }>;
+type UserCreate = (username: string, password: string) => Promise<UserData>;
 
 const userCreate: UserCreate = async (username, password) => {
   const newUser = await User.create({
