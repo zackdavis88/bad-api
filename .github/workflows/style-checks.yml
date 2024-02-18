@@ -30,6 +30,6 @@ jobs:
         run: |
           echo "
           export const SECRET = 'dummy_secret';
-          export const SALT_ROUNDS = 10;"
+          export const SALT_ROUNDS = 10;" > src/config/auth.ts
       - name: Build app
         run: npm run build
