@@ -7,7 +7,9 @@
     "build:prod": "tsc && babel dist --out-dir dist",
     "prestart:prod": "npm run build:prod",
     "start:prod": "node .",
-    "start:dev": "nodemon --watch 'src/*' --ext 'ts,json' --ignore 'test/*' --exec 'eslint --ext .ts src/*/** && node -r tsconfig-paths/register -r ts-node/register src/server/server.ts'"
+    "start:dev": "nodemon --watch 'src/*' --ext 'ts,json' --ignore 'test/*' --exec 'eslint --ext .ts src/*/** && node -r tsconfig-paths/register -r ts-node/register src/server/server.ts'",
+    "pretest": "tsc && babel dist --out-dir dist",
+    "test": "jest --verbose --watchAll --detectOpenHandles"
   },
   "repository": {
     "type": "git",
@@ -38,6 +40,7 @@
     "jest": "^29.7.0",
     "nodemon": "^3.0.3",
     "prettier": "^3.2.5",
+    "supertest": "^6.3.4",
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
