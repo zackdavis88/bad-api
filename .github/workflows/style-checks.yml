@@ -13,5 +13,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 18
-      - run: node -v
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - name: Install node_modules
+        run: npm install
+      - name: Build app
+        run: npm run build

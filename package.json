@@ -4,8 +4,8 @@
   "description": "One day this will be like JIRA but bad.",
   "main": "dist/server/server.js",
   "scripts": {
-    "build:prod": "tsc && babel dist --out-dir dist",
-    "prestart:prod": "npm run build:prod",
+    "build": "tsc && babel dist --out-dir dist",
+    "prestart:prod": "npm run build",
     "start:prod": "node .",
     "start:dev": "nodemon --watch 'src/*' --ext 'ts,json' --ignore 'test/*' --exec 'eslint --ext .ts src/*/** && node -r tsconfig-paths/register -r ts-node/register src/server/server.ts'",
     "pretest": "tsc && babel dist --out-dir dist",
