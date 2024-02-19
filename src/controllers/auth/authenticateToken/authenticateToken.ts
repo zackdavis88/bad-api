@@ -1,5 +1,5 @@
 import { User } from 'src/models';
-import { AuthenticationError } from 'src/controllers/validationUtils';
+import { AuthenticationError } from 'src/server/utils/errors';
 
 type AuthenticateToken = (userId: string, apiKey: string) => Promise<User>;
 

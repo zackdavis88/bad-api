@@ -1,5 +1,5 @@
 import { User } from 'src/models';
-import { NotFoundError } from 'src/controllers/validationUtils';
+import { NotFoundError } from 'src/server/utils/errors';
 import { UserData } from 'src/server/types';
 
 type GetOneUser = (username: string) => Promise<UserData>;

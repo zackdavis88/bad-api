@@ -5,11 +5,11 @@ import express from 'express';
 import morgan from 'morgan';
 import methodOverride from 'method-override';
 import { PORT } from 'src/config/app';
-import { BaseError } from 'sequelize';
 import {
   configureResponseHandlers,
   configureRoutes,
   initializeDatabaseConnection,
+  ThrownError,
 } from './utils';
 import { User } from 'src/models';
 
@@ -21,13 +21,9 @@ declare global {
       user: User;
     }
     interface Response {
-      fatalError: (message: string, errorDetails?: BaseError) => Response | undefined;
-      validationError: (message: string) => Response | undefined;
-      notFoundError: (message: string) => Response | undefined;
-      authenticationError: (message: string) => Response | undefined;
-      authorizationError: (message: string) => Response | undefined;
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       success: (message: string, data?: any) => Response | undefined;
+      sendError: (error: ThrownError) => Response | undefined;
     }
   }
 }

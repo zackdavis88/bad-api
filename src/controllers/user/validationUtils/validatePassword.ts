@@ -1,4 +1,4 @@
-import { ValidationError } from 'src/controllers/validationUtils';
+import { ValidationError } from 'src/server/utils/errors';
 
 const validatePassword = (password: unknown) => {
   if (password === null || password === undefined) {

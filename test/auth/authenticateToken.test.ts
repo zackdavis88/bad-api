@@ -1,5 +1,5 @@
 import { TestHelper } from '../utils';
-import { ErrorTypes } from '../../src/server/utils/configureResponseHandlers';
+import { ErrorTypes } from '../../src/server/utils/errors';
 import request from 'supertest';
 import { User } from '../../src/models';
 const testHelper = new TestHelper();

@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { User } from 'src/models';
 import { SECRET } from 'src/config/auth';
-import { AuthenticationError } from 'src/controllers/validationUtils';
+import { AuthenticationError } from 'src/server/utils/errors';
 import { UserData } from 'src/server/types';
 
 interface UserDataWithToken extends UserData {

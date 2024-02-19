@@ -1,84 +1,18 @@
 import { Response, Request, NextFunction } from 'express';
-import { BaseError } from 'sequelize';
+import {
+  ValidationError,
+  NotFoundError,
+  AuthenticationError,
+  AuthorizationError,
+  ErrorTypes,
+} from './errors';
 
-export enum ErrorTypes {
-  FATAL = 'FATAL',
-  VALIDATION = 'VALIDATION',
-  NOT_FOUND = 'NOT_FOUND',
-  AUTHENTICATION = 'AUTHENTICATION',
-  AUTHORIZATION = 'AUTHORIZATION',
-}
-
-/*
-  NAME: Fatal Error
-  CODE: 500
-  DESC: Used whenever something out of a user's control happens. Such as a library/dependency failing
-        for an unknown reason.
-*/
-const fatalError = (res: Response) => {
-  return (message: string, errorDetails?: BaseError) => {
-    res.statusCode = 500;
-    if (!res.headersSent) {
-      return res.json({ error: message, errorType: ErrorTypes.FATAL, errorDetails });
-    }
-  };
-};
-
-/*
-  NAME: Validation Error
-  CODE: 400
-  DESC: Used when a user submits input that fails validation.
-*/
-const validationError = (res: Response) => {
-  return (message: string) => {
-    res.statusCode = 400;
-    if (!res.headersSent) {
-      return res.json({ error: message, errorType: ErrorTypes.VALIDATION });
-    }
-  };
-};
-
-/*
-  NAME: Not Found Error
-  CODE: 404
-  DESC: Used when a resource or API route is not found.
-*/
-const notFoundError = (res: Response) => {
-  return (message: string) => {
-    res.statusCode = 404;
-    if (!res.headersSent) {
-      return res.json({ error: message, errorType: ErrorTypes.NOT_FOUND });
-    }
-  };
-};
-
-/*
-  NAME: Authentication Error
-  CODE: 403
-  DESC: Used when a user fails to authenticate successfully.
-*/
-const authenticationError = (res: Response) => {
-  return (message: string) => {
-    res.statusCode = 403;
-    if (!res.headersSent) {
-      return res.json({ error: message, errorType: ErrorTypes.AUTHENTICATION });
-    }
-  };
-};
-
-/*
-  NAME: Authorization Error
-  CODE: 401
-  DESC: Used when a user tries to perform an action with insufficient permission.
-*/
-const authorizationError = (res: Response) => {
-  return (message: string) => {
-    res.statusCode = 401;
-    if (!res.headersSent) {
-      return res.json({ error: message, errorType: ErrorTypes.AUTHORIZATION });
-    }
-  };
-};
+export type ThrownError =
+  | ValidationError
+  | NotFoundError
+  | AuthenticationError
+  | AuthorizationError
+  | unknown;
 
 /*
   NAME: Success
@@ -94,17 +28,45 @@ const success = (res: Response) => {
   };
 };
 
+/*
+  NAME: SendError
+  DESC: Receives a thrown error and sends an error response 
+        based on the type of error received.
+*/
+const sendError = (res: Response) => (error: ThrownError) => {
+  const isValidationError = error instanceof ValidationError;
+  const isNotFoundError = error instanceof NotFoundError;
+  const isAuthenticationError = error instanceof AuthenticationError;
+  const isAuthorizationError = error instanceof AuthorizationError;
+
+  const isKnownError =
+    isValidationError || isNotFoundError || isAuthenticationError || isAuthorizationError;
+
+  if (!res.headersSent) {
+    if (isKnownError) {
+      res.statusCode = error.statusCode;
+      return res.json({
+        error: error.message,
+        errorType: error.errorType,
+      });
+    } else {
+      res.statusCode = 500;
+      res.json({
+        error: 'an unknown error has occurred',
+        errorType: ErrorTypes.FATAL,
+        errorDetails: error,
+      });
+    }
+  }
+};
+
 const configureResponseHandlersMiddleware = (
   _req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  res.fatalError = fatalError(res);
-  res.validationError = validationError(res);
-  res.notFoundError = notFoundError(res);
-  res.authenticationError = authenticationError(res);
-  res.authorizationError = authorizationError(res);
   res.success = success(res);
+  res.sendError = sendError(res);
   next();
 };
 
