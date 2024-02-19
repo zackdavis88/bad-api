@@ -12,7 +12,7 @@ const configureUserRoutes = (router: Router) => {
     .all(AuthController.authenticateToken)
     .get(UserController.getOne)
     .post(AuthController.authorizeUserUpdate, UserController.update)
-    .delete(AuthController.authorizeUserUpdate);
+    .delete(AuthController.authorizeUserUpdate, UserController.remove);
 };
 
 export default configureUserRoutes;

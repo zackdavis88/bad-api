@@ -15,7 +15,7 @@ const updateUserValidation: UpdateUserValidation = (
 ) => {
   validatePassword(newPassword, 'newPassword');
 
-  if (!currentPassword) {
+  if (currentPassword === undefined || currentPassword === null) {
     throw new ValidationError('currentPassword is missing from input');
   }
 
