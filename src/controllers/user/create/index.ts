@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import userCreateValidation from './userCreateValidation';
 import userCreate from './userCreate';
-import { ValidationError } from 'src/controllers/validation_utils';
+import { ValidationError } from 'src/controllers/validationUtils';
 
 interface UserCreateRequestBody {
   username: unknown;

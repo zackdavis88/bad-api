@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import generateTokenValidation from './generateTokenValidation';
 import generateToken from './generateToken';
-import { ValidationError, AuthenticationError } from 'src/controllers/validation_utils';
+import { ValidationError, AuthenticationError } from 'src/controllers/validationUtils';
 
 const generateTokenFlow = async (req: Request, res: Response) => {
   const authHeader = req.headers['x-auth-basic']

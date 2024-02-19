@@ -1,6 +1,6 @@
 import jwt, { TokenExpiredError, JsonWebTokenError } from 'jsonwebtoken';
 import { SECRET } from 'src/config/auth';
-import { ValidationError } from 'src/controllers/validation_utils';
+import { ValidationError } from 'src/controllers/validationUtils';
 
 type AuthenticateTokenValidation = (header: string) => {
   userId: string;

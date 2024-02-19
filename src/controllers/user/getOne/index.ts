@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { NotFoundError } from 'src/controllers/validation_utils';
+import { NotFoundError } from 'src/controllers/validationUtils';
 import getOneUser from './getOneUser';
 
 const getOneUserFlow = async (req: Request, res: Response) => {

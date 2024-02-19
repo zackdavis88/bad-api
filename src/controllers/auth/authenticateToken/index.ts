@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import authenticateTokenValidation from './authenticateTokenValidation';
 import authenticateToken from './authenticateToken';
-import { ValidationError, AuthenticationError } from 'src/controllers/validation_utils';
+import { ValidationError, AuthenticationError } from 'src/controllers/validationUtils';
 import { DatabaseError } from 'sequelize';
 
 const authenticateTokenFlow = async (req: Request, res: Response, next: NextFunction) => {

@@ -1,4 +1,4 @@
-import { ValidationError } from 'src/controllers/validation_utils';
+import { ValidationError } from 'src/controllers/validationUtils';
 
 type BasicHeaderValidation = (header: string) => {
   username: string;

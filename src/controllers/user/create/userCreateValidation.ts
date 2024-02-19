@@ -1,7 +1,4 @@
-import {
-  validateUsername,
-  validatePassword,
-} from 'src/controllers/user/validation_utils';
+import { validateUsername, validatePassword } from 'src/controllers/user/validationUtils';
 
 type UserCreateValidation = (username: unknown, password: unknown) => Promise<void>;
 
