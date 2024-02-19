@@ -1,9 +1,9 @@
 import { User } from 'src/models';
 import { UserData } from 'src/server/types';
 
-type UserCreate = (username: string, password: string) => Promise<UserData>;
+type CreateUser = (username: string, password: string) => Promise<UserData>;
 
-const userCreate: UserCreate = async (username, password) => {
+const createUser: CreateUser = async (username, password) => {
   const newUser = await User.create({
     username: username.toLowerCase(),
     displayName: username,
@@ -19,4 +19,4 @@ const userCreate: UserCreate = async (username, password) => {
   return userData;
 };
 
-export default userCreate;
+export default createUser;
