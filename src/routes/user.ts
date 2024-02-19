@@ -11,7 +11,7 @@ const configureUserRoutes = (router: Router) => {
     .route('/users/:username')
     .all(AuthController.authenticateToken)
     .get(UserController.getOne)
-    .post(AuthController.authorizeUserUpdate)
+    .post(AuthController.authorizeUserUpdate, UserController.update)
     .delete(AuthController.authorizeUserUpdate);
 };
 
