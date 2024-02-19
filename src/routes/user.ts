@@ -1,8 +1,12 @@
 import { Router } from 'express';
-import { UserController } from 'src/controllers';
+import { AuthController, UserController } from 'src/controllers';
 
 const configureUserRoutes = (router: Router) => {
   router.route('/users').post(UserController.create);
+
+  router
+    .route('/users/:username')
+    .get(AuthController.authenticateToken, UserController.getOne);
 };
 
 export default configureUserRoutes;
