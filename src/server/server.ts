@@ -9,7 +9,6 @@ import {
   configureResponseHandlers,
   configureRoutes,
   initializeDatabaseConnection,
-  ThrownError,
 } from './utils';
 import { User } from 'src/models';
 
@@ -23,7 +22,7 @@ declare global {
     interface Response {
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
       success: (message: string, data?: any) => Response | undefined;
-      sendError: (error: ThrownError) => Response | undefined;
+      sendError: (error: unknown) => Response | undefined;
     }
   }
 }

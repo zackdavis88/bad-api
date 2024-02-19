@@ -7,13 +7,6 @@ import {
   ErrorTypes,
 } from './errors';
 
-export type ThrownError =
-  | ValidationError
-  | NotFoundError
-  | AuthenticationError
-  | AuthorizationError
-  | unknown;
-
 /*
   NAME: Success
   CODE: 200
@@ -33,7 +26,7 @@ const success = (res: Response) => {
   DESC: Receives a thrown error and sends an error response 
         based on the type of error received.
 */
-const sendError = (res: Response) => (error: ThrownError) => {
+const sendError = (res: Response) => (error: unknown) => {
   const isValidationError = error instanceof ValidationError;
   const isNotFoundError = error instanceof NotFoundError;
   const isAuthenticationError = error instanceof AuthenticationError;
