@@ -1,34 +1,25 @@
 import { Request, Response } from 'express';
-import userCreateValidation from './userCreateValidation';
-import userCreate from './userCreate';
-import { ValidationError } from 'src/controllers/validation_utils';
+import createUserValidation from './createUserValidation';
+import createUser from './createUser';
 
-interface UserCreateRequestBody {
+interface CreateUserRequestBody {
   username: unknown;
   password: unknown;
 }
 
-const userCreateFlow = async (
-  req: Request<never, never, UserCreateRequestBody>,
+const createUserFlow = async (
+  req: Request<never, never, CreateUserRequestBody>,
   res: Response,
 ) => {
   const { username, password } = req.body;
 
   try {
-    await userCreateValidation(username, password);
-  } catch (error) {
-    if (error instanceof ValidationError) {
-      return res.validationError(error.message);
-    }
-    return res.fatalError('fatal error while validating user create input');
-  }
-
-  try {
-    const userData = await userCreate(username as string, password as string);
+    await createUserValidation(username, password);
+    const userData = await createUser(username as string, password as string);
     return res.success('user has been successfully created', { user: userData });
-  } catch {
-    return res.fatalError('fatal error while creating user');
+  } catch (error) {
+    return res.sendError(error);
   }
 };
 
-export default userCreateFlow;
+export default createUserFlow;

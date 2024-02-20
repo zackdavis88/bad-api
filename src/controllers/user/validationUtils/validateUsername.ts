@@ -1,5 +1,5 @@
 import { User } from 'src/models';
-import { ValidationError } from 'src/controllers/validation_utils';
+import { ValidationError } from 'src/server/utils/errors';
 
 const validateUsername = async (username: unknown) => {
   if (username === null || username === undefined) {

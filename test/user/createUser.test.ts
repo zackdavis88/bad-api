@@ -1,5 +1,5 @@
 import { TestHelper } from '../utils';
-import { ErrorTypes } from '../../src/server/utils/configureResponseHandlers';
+import { ErrorTypes } from '../../src/server/utils/errors';
 import request from 'supertest';
 const testHelper = new TestHelper();
 const serverUrl = testHelper.getServerUrl();
@@ -14,7 +14,7 @@ describe('User Create', () => {
     };
 
     beforeAll(async () => {
-      const testUser = await testHelper.createTestUser('password');
+      const testUser = await testHelper.createTestUser();
       existingUsername = testUser.username;
     });
 
