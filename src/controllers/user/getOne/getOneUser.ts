@@ -20,7 +20,6 @@ const getOneUser: GetOneUser = async (username) => {
     username: requestedUser.username,
     displayName: requestedUser.displayName,
     createdOn: requestedUser.createdOn,
-    updatedOn: requestedUser.updatedOn,
   };
 };
 

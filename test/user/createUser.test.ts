@@ -14,7 +14,7 @@ describe('User Create', () => {
     };
 
     beforeAll(async () => {
-      const testUser = await testHelper.createTestUser('password');
+      const testUser = await testHelper.createTestUser();
       existingUsername = testUser.username;
     });
 
