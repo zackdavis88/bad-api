@@ -8,9 +8,9 @@ import {
   CreationOptional,
   DataTypes,
   NonAttribute,
-  // HasManyGetAssociationsMixin,
+  HasManyGetAssociationsMixin,
 } from 'sequelize';
-// import Membership from 'src/models/membership/membership';
+import Membership from 'src/models/membership/membership';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<string>;
@@ -23,7 +23,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare updatedOn: CreationOptional<Date> | null;
   declare deletedOn: CreationOptional<Date> | null;
 
-  // declare getMemberships: HasManyGetAssociationsMixin<Membership>;
+  declare getMemberships: HasManyGetAssociationsMixin<Membership>;
 
   static generateHash(password: string): NonAttribute<string> {
     return bcrypt.hashSync(password, SALT_ROUNDS);

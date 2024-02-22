@@ -5,14 +5,14 @@ import {
   InferCreationAttributes,
   CreationOptional,
   DataTypes,
-  // HasManyCreateAssociationMixin,
-  // HasManyGetAssociationsMixin,
-  // HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin,
+  HasManyGetAssociationsMixin,
+  HasManyCountAssociationsMixin,
   ForeignKey,
   NonAttribute,
 } from 'sequelize';
 import User from 'src/models/user/user';
-// import Membership from 'src/models/membership/membership';
+import Membership from 'src/models/membership/membership';
 
 class Project extends Model<InferAttributes<Project>, InferCreationAttributes<Project>> {
   declare id: CreationOptional<string>;
@@ -20,9 +20,9 @@ class Project extends Model<InferAttributes<Project>, InferCreationAttributes<Pr
   declare name: string;
   declare description: CreationOptional<string> | null;
 
-  // declare createMembership: HasManyCreateAssociationMixin<Membership>;
-  // declare getMemberships: HasManyGetAssociationsMixin<Membership>;
-  // declare countMemberships: HasManyCountAssociationsMixin;
+  declare createMembership: HasManyCreateAssociationMixin<Membership>;
+  declare getMemberships: HasManyGetAssociationsMixin<Membership>;
+  declare countMemberships: HasManyCountAssociationsMixin;
 
   declare createdById: ForeignKey<User['id']>;
   declare createdBy: NonAttribute<User>;
