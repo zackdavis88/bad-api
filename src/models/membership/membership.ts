@@ -44,8 +44,15 @@ export const initializeMembership = (sequelize: Sequelize) => {
     {
       id: {
         type: DataTypes.UUID,
-        primaryKey: true,
         defaultValue: DataTypes.UUIDV4,
+      },
+      userId: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+      },
+      projectId: {
+        type: DataTypes.UUID,
+        primaryKey: true,
       },
       createdOn: {
         type: DataTypes.DATE,
