@@ -95,6 +95,7 @@ export class TestHelper {
     const testProject = await Project.create({
       name,
       description,
+      createdById: user.id,
     });
 
     await testProject.createMembership({

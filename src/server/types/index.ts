@@ -8,9 +8,9 @@ export interface UserData {
 export interface ProjectData {
   id: string;
   name: string;
-  description: string | null;
+  description?: string | null;
   createdOn: Date;
-  updatedOn?: Date;
-  createdBy: Omit<UserData, 'createdOn' | 'updatedOn'>;
+  updatedOn?: Date | null;
+  createdBy?: Omit<UserData, 'createdOn' | 'updatedOn'>;
   updatedBy?: Omit<UserData, 'createdOn' | 'updatedOn'>;
 }

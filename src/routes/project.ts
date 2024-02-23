@@ -5,6 +5,7 @@ const configureUserRoutes = (router: Router) => {
   router
     .route('/projects')
     .all(AuthController.authenticateToken)
+    .get(ProjectController.getAll)
     .post(ProjectController.create);
 };
 
