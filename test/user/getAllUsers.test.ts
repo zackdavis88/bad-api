@@ -23,6 +23,11 @@ describe('User GetAll', () => {
       await testHelper.createTestUser('Password9');
       await testHelper.createTestUser('Password10');
       authToken = testHelper.generateToken(testUser);
+
+      const inactiveUser = await testHelper.createTestUser();
+      inactiveUser.isActive = false;
+      inactiveUser.deletedOn = new Date();
+      await inactiveUser.save();
     });
 
     afterAll(async () => {

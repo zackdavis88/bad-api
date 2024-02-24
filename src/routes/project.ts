@@ -7,6 +7,11 @@ const configureUserRoutes = (router: Router) => {
     .all(AuthController.authenticateToken)
     .get(ProjectController.getAll)
     .post(ProjectController.create);
+
+  router
+    .route('/projects/:projectId')
+    .all(AuthController.authenticateToken, ProjectController.getProjectMiddleware)
+    .get(ProjectController.getOne);
 };
 
 export default configureUserRoutes;
