@@ -1,6 +1,6 @@
 # Bad API
 
-One day this will be like JIRA but bad.
+One day this will be a project ticketing system that is severly lacking in features when compared to other similiar products.
 
 ## The Plan
 
@@ -14,4 +14,4 @@ This API will manage:
 - Stories
 - Bugs
 
-Similar to JIRA but way lacking in features and polish.
+Similar to other project management systems, but way lacking in features and polish.
