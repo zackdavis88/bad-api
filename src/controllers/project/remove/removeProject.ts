@@ -15,20 +15,20 @@ const removeProject: RemoveProject = async (project, user) => {
     description: project.description,
     createdOn: project.createdOn,
     createdBy:
-      project.createdBy ?
+      project.createdById && project.createdBy ?
         {
           username: project.createdBy.username,
           displayName: project.createdBy.displayName,
         }
-      : undefined,
+      : null,
     updatedOn: project.updatedOn,
     updatedBy:
-      project.updatedBy ?
+      project.updatedById && project.updatedBy ?
         {
           username: project.updatedBy.username,
           displayName: project.updatedBy.displayName,
         }
-      : undefined,
+      : null,
     deletedOn: project.deletedOn,
     deletedBy: {
       username: user.username,

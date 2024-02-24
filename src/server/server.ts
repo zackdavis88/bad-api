@@ -67,7 +67,7 @@ initializeDatabaseConnection().then(() => {
   // Start the server.
   server.listen(PORT, () => {
     console.log(
-      'Bad JIRA listening on port %s using %s protocol',
+      'Bad API listening on port %s using %s protocol',
       PORT,
       useHttps ? 'https' : 'http',
     );

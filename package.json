@@ -1,7 +1,7 @@
 {
   "name": "bad-api",
   "version": "0.0.1",
-  "description": "One day this will be like JIRA but bad.",
+  "description": "One day this will be a bad project management system.",
   "main": "dist/server/server.js",
   "scripts": {
     "build": "tsc && babel dist --out-dir dist",

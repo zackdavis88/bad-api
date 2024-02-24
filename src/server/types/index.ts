@@ -12,8 +12,8 @@ export interface ProjectData {
   description?: string | null;
   createdOn: Date;
   updatedOn?: Date | null;
-  deletedOn?: Date;
-  createdBy?: Omit<UserData, 'createdOn' | 'updatedOn'>;
-  updatedBy?: Omit<UserData, 'createdOn' | 'updatedOn'>;
-  deletedBy?: Omit<UserData, 'createdOn' | 'updatedOn'>;
+  deletedOn?: Date | null;
+  createdBy: Omit<UserData, 'createdOn' | 'updatedOn'> | null;
+  updatedBy?: Omit<UserData, 'createdOn' | 'updatedOn'> | null;
+  deletedBy?: Omit<UserData, 'createdOn' | 'updatedOn'> | null;
 }

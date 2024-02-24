@@ -110,24 +110,23 @@ describe('Project GetOne', () => {
 
           const { message, project } = res.body;
           expect(message).toBe('project has been successfully retrieved');
-          expect(project).toBeTruthy();
-          expect(project.id).toBe(testProject.id);
-          expect(project.name).toBe(testProject.name);
-          expect(project.description).toBe(testProject.description);
-
-          expect(project.createdOn).toBe(testProject.createdOn.toISOString());
-          expect(project.createdBy).toEqual({
-            username: testUser1.username,
-            displayName: testUser1.displayName,
+          expect(project).toEqual({
+            id: testProject.id,
+            name: testProject.name,
+            description: testProject.description,
+            createdOn: testProject.createdOn.toISOString(),
+            createdBy: {
+              username: testUser1.username,
+              displayName: testUser1.displayName,
+            },
+            updatedOn: testProject.updatedOn?.toISOString(),
+            updatedBy: {
+              username: testUser2.username,
+              displayName: testUser2.displayName,
+            },
+            membershipCount: 2,
           });
 
-          expect(project.updatedOn).toBe(testProject.updatedOn?.toISOString());
-          expect(project.updatedBy).toEqual({
-            username: testUser2.username,
-            displayName: testUser2.displayName,
-          });
-
-          expect(project.membershipCount).toBe(2);
           done();
         });
     });

@@ -1,5 +1,6 @@
 import { TestHelper } from '../utils';
 import { ErrorTypes } from '../../src/server/utils/errors';
+import { User } from '../../src/models';
 import request from 'supertest';
 const testHelper = new TestHelper();
 const serverUrl = testHelper.getServerUrl();
@@ -179,17 +180,32 @@ describe('User Create', () => {
         .post(apiRoute)
         .send(payload)
         .expect(200)
-        .end((err, res) => {
+        .end(async (err, res) => {
           if (err) {
             return done(err);
           }
 
+          // Ensure the user was actually created
+          const createdUser = await User.findOne({
+            where: {
+              username: String(payload.username).toLowerCase(),
+              isActive: true,
+            },
+          });
+          if (!createdUser) {
+            return done('created user was not found in database');
+          }
+
           const { message, user } = res.body;
           expect(message).toBe('user has been successfully created');
-          expect(user).toBeTruthy();
-          expect(user.username).toBe(String(payload.username).toLowerCase());
-          expect(user.displayName).toBe(payload.username);
-          expect(user.createdOn).toBeTruthy();
+          expect(user).toEqual({
+            username: String(payload.username).toLowerCase(),
+            displayName: payload.username,
+            createdOn: createdUser.createdOn.toISOString(),
+          });
+
+          // Ensure the password is valid.
+          expect(createdUser.compareHash(String(payload.password))).toBe(true);
           testHelper.addTestUsername(user.username);
           done();
         });
