@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { AuthController, ProjectController } from 'src/controllers';
 
-const configureUserRoutes = (router: Router) => {
+const configureProjectRoutes = (router: Router) => {
   router
     .route('/projects')
     .all(AuthController.authenticateToken)
@@ -16,4 +16,4 @@ const configureUserRoutes = (router: Router) => {
     .delete(AuthController.authorizeProjectRemove, ProjectController.remove);
 };
 
-export default configureUserRoutes;
+export default configureProjectRoutes;
