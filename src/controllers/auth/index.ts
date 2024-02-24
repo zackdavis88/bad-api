@@ -3,6 +3,7 @@ import { default as authenticateToken } from './authenticateToken';
 import { default as getAuthenticationDetails } from './getAuthenticationDetails';
 import { default as authorizeUserUpdate } from './authorizeUserUpdate';
 import { default as authorizeProjectUpdate } from './authorizeProjectUpdate';
+import { default as authorizeProjectRemove } from './authorizeProjectRemove';
 
 export default {
   generateToken,
@@ -10,4 +11,5 @@ export default {
   getAuthenticationDetails,
   authorizeUserUpdate,
   authorizeProjectUpdate,
+  authorizeProjectRemove,
 };

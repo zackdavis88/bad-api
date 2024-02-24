@@ -116,14 +116,16 @@ describe('Project GetOne', () => {
           expect(project.description).toBe(testProject.description);
 
           expect(project.createdOn).toBe(testProject.createdOn.toISOString());
-          expect(project.createdBy).toBeTruthy();
-          expect(project.createdBy.username).toBe(testUser1.username);
-          expect(project.createdBy.displayName).toBe(testUser1.displayName);
+          expect(project.createdBy).toEqual({
+            username: testUser1.username,
+            displayName: testUser1.displayName,
+          });
 
           expect(project.updatedOn).toBe(testProject.updatedOn?.toISOString());
-          expect(project.updatedBy).toBeTruthy();
-          expect(project.updatedBy.username).toBe(testUser2.username);
-          expect(project.updatedBy.displayName).toBe(testUser2.displayName);
+          expect(project.updatedBy).toEqual({
+            username: testUser2.username,
+            displayName: testUser2.displayName,
+          });
 
           expect(project.membershipCount).toBe(2);
           done();

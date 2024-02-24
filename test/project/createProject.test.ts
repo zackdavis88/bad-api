@@ -171,11 +171,13 @@ describe('Project Create', () => {
           expect(project.id).toBeTruthy();
           expect(project.name).toBe(payload.name);
           expect(project.description).toBe(payload.description);
+
           expect(project.createdOn).toBeTruthy();
           expect(project.createdBy).toBeTruthy();
-          const { username, displayName } = project.createdBy;
-          expect(username).toBe(authenticatedUser.username);
-          expect(displayName).toBe(authenticatedUser.displayName);
+          expect(project.createdBy).toEqual({
+            username: authenticatedUser.username,
+            displayName: authenticatedUser.displayName,
+          });
 
           // Ensure that a membership was created for the project creator
           const createdProject = await Project.findOne({

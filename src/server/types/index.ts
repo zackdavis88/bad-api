@@ -3,6 +3,7 @@ export interface UserData {
   displayName: string;
   createdOn: Date;
   updatedOn?: Date | null;
+  deletedOn?: Date | null;
 }
 
 export interface ProjectData {
@@ -11,6 +12,8 @@ export interface ProjectData {
   description?: string | null;
   createdOn: Date;
   updatedOn?: Date | null;
+  deletedOn?: Date;
   createdBy?: Omit<UserData, 'createdOn' | 'updatedOn'>;
   updatedBy?: Omit<UserData, 'createdOn' | 'updatedOn'>;
+  deletedBy?: Omit<UserData, 'createdOn' | 'updatedOn'>;
 }

@@ -30,6 +30,11 @@ describe('Project Update', () => {
         'this project was generated via automated testing.',
       );
 
+      await testProject.createMembership({
+        userId: memberWithoutUpdatePermissions.id,
+        createdById: authenticatedUser.id,
+      });
+
       inactiveProject = await testHelper.createTestProject(authenticatedUser);
       inactiveProject.deletedOn = new Date();
       inactiveProject.deletedById = authenticatedUser.id;
