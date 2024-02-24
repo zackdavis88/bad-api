@@ -11,6 +11,10 @@ describe('User Update', () => {
     let authenticatedUser: User;
     let authToken: string;
     let testUser: User;
+    let payload: {
+      newPassword: unknown;
+      currentPassword: unknown;
+    };
 
     beforeAll(async () => {
       authenticatedUser = await testHelper.createTestUser();
@@ -20,6 +24,10 @@ describe('User Update', () => {
 
     beforeEach(() => {
       apiRoute = `/users/${authenticatedUser.displayName}`;
+      payload = {
+        newPassword: 'SomethingNew48',
+        currentPassword: 'Password1',
+      };
     });
 
     afterAll(async () => {
@@ -50,21 +58,27 @@ describe('User Update', () => {
     });
 
     it('should reject requests when newPassword is missing', (done) => {
-      request(serverUrl).post(apiRoute).set('x-auth-token', authToken).expect(
-        400,
-        {
-          error: 'newPassword is missing from input',
-          errorType: ErrorTypes.VALIDATION,
-        },
-        done,
-      );
-    });
-
-    it('should reject requests when newPassword is not a string', (done) => {
+      payload.newPassword = undefined;
       request(serverUrl)
         .post(apiRoute)
         .set('x-auth-token', authToken)
-        .send({ newPassword: 1232133 })
+        .send(payload)
+        .expect(
+          400,
+          {
+            error: 'newPassword is missing from input',
+            errorType: ErrorTypes.VALIDATION,
+          },
+          done,
+        );
+    });
+
+    it('should reject requests when newPassword is not a string', (done) => {
+      payload.newPassword = 1232133;
+      request(serverUrl)
+        .post(apiRoute)
+        .set('x-auth-token', authToken)
+        .send(payload)
         .expect(
           400,
           {
@@ -76,10 +90,11 @@ describe('User Update', () => {
     });
 
     it('should reject requests when newPassword is less than 8 characters', (done) => {
+      payload.newPassword = 'abc';
       request(serverUrl)
         .post(apiRoute)
         .set('x-auth-token', authToken)
-        .send({ newPassword: 'abc' })
+        .send(payload)
         .expect(
           400,
           {
@@ -91,10 +106,11 @@ describe('User Update', () => {
     });
 
     it('should reject requests when newPassword has no uppercase characters', (done) => {
+      payload.newPassword = 'password1';
       request(serverUrl)
         .post(apiRoute)
         .set('x-auth-token', authToken)
-        .send({ newPassword: 'password1' })
+        .send(payload)
         .expect(
           400,
           {
@@ -106,10 +122,11 @@ describe('User Update', () => {
     });
 
     it('should reject requests when newPassword has no lowercase characters', (done) => {
+      payload.newPassword = 'PASSWORD1';
       request(serverUrl)
         .post(apiRoute)
         .set('x-auth-token', authToken)
-        .send({ newPassword: 'PASSWORD1' })
+        .send(payload)
         .expect(
           400,
           {
@@ -121,10 +138,11 @@ describe('User Update', () => {
     });
 
     it('should reject requests when newPassword has no number characters', (done) => {
+      payload.newPassword = 'PasswordOne';
       request(serverUrl)
         .post(apiRoute)
         .set('x-auth-token', authToken)
-        .send({ newPassword: 'PasswordOne' })
+        .send(payload)
         .expect(
           400,
           {
@@ -136,10 +154,11 @@ describe('User Update', () => {
     });
 
     it('should reject requests when currentPassword is missing', (done) => {
+      payload.currentPassword = undefined;
       request(serverUrl)
         .post(apiRoute)
         .set('x-auth-token', authToken)
-        .send({ newPassword: 'SomethingNew48' })
+        .send(payload)
         .expect(
           400,
           {
@@ -151,10 +170,11 @@ describe('User Update', () => {
     });
 
     it('should reject requests when currentPassword is not a string', (done) => {
+      payload.currentPassword = false;
       request(serverUrl)
         .post(apiRoute)
         .set('x-auth-token', authToken)
-        .send({ newPassword: 'SomethingNew48', currentPassword: false })
+        .send(payload)
         .expect(
           400,
           {
@@ -166,10 +186,11 @@ describe('User Update', () => {
     });
 
     it('should reject requests when currentPassword is not valid', (done) => {
+      payload.currentPassword = 'Password2';
       request(serverUrl)
         .post(apiRoute)
         .set('x-auth-token', authToken)
-        .send({ newPassword: 'SomethingNew48', currentPassword: 'Password2' })
+        .send(payload)
         .expect(
           400,
           {
@@ -181,11 +202,10 @@ describe('User Update', () => {
     });
 
     it('should successfully update a user password', (done) => {
-      const newPassword = 'SomethingNew48';
       request(serverUrl)
         .post(apiRoute)
         .set('x-auth-token', authToken)
-        .send({ newPassword, currentPassword: 'Password1' })
+        .send(payload)
         .expect(200)
         .end(async (err, res) => {
           if (err) {
@@ -210,7 +230,9 @@ describe('User Update', () => {
           });
 
           // compareHash should return true for the new password value.
-          expect(updatedAuthenticatedUser.compareHash(newPassword)).toBe(true);
+          expect(updatedAuthenticatedUser.compareHash(String(payload.newPassword))).toBe(
+            true,
+          );
           done();
         });
     });
