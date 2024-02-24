@@ -164,22 +164,9 @@ describe('Project Create', () => {
           if (err) {
             return done(err);
           }
-
           const { message, project } = res.body;
-          expect(message).toBe('project has been successfully created');
-          expect(project).toBeTruthy();
-          expect(project.id).toBeTruthy();
-          expect(project.name).toBe(payload.name);
-          expect(project.description).toBe(payload.description);
 
-          expect(project.createdOn).toBeTruthy();
-          expect(project.createdBy).toBeTruthy();
-          expect(project.createdBy).toEqual({
-            username: authenticatedUser.username,
-            displayName: authenticatedUser.displayName,
-          });
-
-          // Ensure that a membership was created for the project creator
+          // Ensure the project was actually created
           const createdProject = await Project.findOne({
             where: {
               id: project.id,
@@ -187,14 +174,33 @@ describe('Project Create', () => {
             },
           });
           if (!createdProject) {
-            return done('error when querying for created project');
+            return done('created project was not found in database');
           }
+
+          expect(message).toBe('project has been successfully created');
+          expect(project).toEqual({
+            id: createdProject.id,
+            name: payload.name,
+            description: payload.description,
+            createdOn: createdProject.createdOn.toISOString(),
+            createdBy: {
+              username: authenticatedUser.username,
+              displayName: authenticatedUser.displayName,
+            },
+          });
+          expect(createdProject.createdById).toBe(authenticatedUser.id);
+          expect(createdProject.name).toBe(payload.name);
+          expect(createdProject.description).toBe(payload.description);
+
+          // Ensure an admin membership was created for the user that created the project
           const membership = (
             await createdProject.getMemberships({
               where: { userId: authenticatedUser.id },
             })
           )[0];
-          expect(membership).toBeTruthy();
+          if (!membership) {
+            return done('created project membership was not found in database');
+          }
           expect(membership.id).toBeTruthy();
           expect(membership.createdOn).toBeTruthy();
           expect(membership.isProjectAdmin).toBe(true);

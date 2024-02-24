@@ -14,7 +14,11 @@ describe('User Remove', () => {
 
     beforeAll(async () => {
       authenticatedUser = await testHelper.createTestUser();
+      authenticatedUser.updatedOn = new Date();
+      await authenticatedUser.save();
+
       testUser = await testHelper.createTestUser();
+
       authToken = testHelper.generateToken(authenticatedUser);
     });
 
@@ -101,18 +105,23 @@ describe('User Remove', () => {
             return done(err);
           }
 
+          // Ensure the user was actually removed.
+          const removedAuthenticatedUser = await User.findOne({
+            where: { id: authenticatedUser.id, isActive: false },
+          });
+          if (!removedAuthenticatedUser) {
+            return done('removed user was not found in database');
+          }
+
           const { message, user } = res.body;
           expect(message).toBe('user has been successfully removed');
-          expect(user).toBeTruthy();
-          expect(user.username).toBe(authenticatedUser.username);
-          expect(user.displayName).toBe(authenticatedUser.displayName);
-          expect(user.createdOn).toBe(authenticatedUser.createdOn.toISOString());
-          // Ensure the user is actually removed.
-          const removedAuthenticatedUser = await User.findOne({
-            where: { id: authenticatedUser.id },
+          expect(user).toEqual({
+            username: authenticatedUser.username,
+            displayName: authenticatedUser.displayName,
+            createdOn: authenticatedUser.createdOn.toISOString(),
+            updatedOn: authenticatedUser.updatedOn?.toISOString(),
+            deletedOn: removedAuthenticatedUser.deletedOn?.toISOString(),
           });
-          expect(user.deletedOn).toBe(removedAuthenticatedUser?.deletedOn?.toISOString());
-          expect(removedAuthenticatedUser?.isActive).toBe(false);
           done();
         });
     });

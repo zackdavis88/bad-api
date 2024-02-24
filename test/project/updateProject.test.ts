@@ -245,50 +245,83 @@ describe('Project Update', () => {
         .set('x-auth-token', authToken)
         .send(payload)
         .expect(200)
-        .end((err, res) => {
+        .end(async (err, res) => {
           if (err) {
             return done(err);
           }
 
+          // Ensure the project was actually update.
+          const updatedTestProject = await Project.findOne({
+            where: { id: testProject.id, isActive: true },
+          });
+          if (!updatedTestProject) {
+            return done('updated project was not found in database');
+          }
+
           const { message, project } = res.body;
           expect(message).toBe('project has been successfully updated');
-          expect(project).toBeTruthy();
-          expect(project.id).toBe(testProject.id);
-          expect(project.name).toBe(payload.name);
-          expect(project.description).toBe(payload.description);
-
-          expect(project.createdOn).toBe(testProject.createdOn.toISOString());
-          expect(project.createdBy).toBeTruthy();
-          expect(project.createdBy.username).toBe(authenticatedUser.username);
-          expect(project.createdBy.displayName).toBe(authenticatedUser.displayName);
-
-          expect(project.updatedOn).toBeTruthy();
-          expect(project.updatedBy).toBeTruthy();
-          expect(project.updatedBy.username).toBe(authenticatedUser.username);
-          expect(project.updatedBy.displayName).toBe(authenticatedUser.displayName);
-
+          expect(project).toEqual({
+            id: testProject.id,
+            name: payload.name,
+            description: payload.description,
+            createdOn: testProject.createdOn.toISOString(),
+            createdBy: {
+              username: authenticatedUser.username,
+              displayName: authenticatedUser.displayName,
+            },
+            updatedOn: updatedTestProject.updatedOn?.toISOString(),
+            updatedBy: {
+              username: authenticatedUser.username,
+              displayName: authenticatedUser.displayName,
+            },
+          });
+          expect(updatedTestProject.updatedById).toBe(authenticatedUser.id);
+          expect(updatedTestProject.name).toBe(payload.name);
+          expect(updatedTestProject.description).toBe(payload.description);
           done();
         });
     });
 
     it('should successfully set a description to null if it is explicitly passed', (done) => {
+      payload.name = null;
       payload.description = null;
       request(serverUrl)
         .post(apiRoute)
         .set('x-auth-token', authToken)
         .send(payload)
         .expect(200)
-        .end((err, res) => {
+        .end(async (err, res) => {
           if (err) {
             return done(err);
           }
 
+          // Ensure the project was actually update.
+          const updatedTestProject = await Project.findOne({
+            where: { id: testProject.id, isActive: true },
+          });
+          if (!updatedTestProject) {
+            return done('updated project was not found in database');
+          }
+
           const { message, project } = res.body;
           expect(message).toBe('project has been successfully updated');
-          expect(project).toBeTruthy();
-          expect(project.id).toBe(testProject.id);
-          expect(project.name).toBe(payload.name);
-          expect(project.description).toBe(null);
+          expect(project).toEqual({
+            id: testProject.id,
+            name: updatedTestProject.name,
+            description: null,
+            createdOn: testProject.createdOn.toISOString(),
+            createdBy: {
+              username: authenticatedUser.username,
+              displayName: authenticatedUser.displayName,
+            },
+            updatedOn: updatedTestProject.updatedOn?.toISOString(),
+            updatedBy: {
+              username: authenticatedUser.username,
+              displayName: authenticatedUser.displayName,
+            },
+          });
+          expect(updatedTestProject.updatedById).toBe(authenticatedUser.id);
+          expect(updatedTestProject.description).toBe(null);
           done();
         });
     });

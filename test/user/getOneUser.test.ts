@@ -16,12 +16,13 @@ describe('User GetOne', () => {
     beforeAll(async () => {
       authenticatedUser = await testHelper.createTestUser();
       testUser = await testHelper.createTestUser();
-      authToken = testHelper.generateToken(authenticatedUser);
 
       inactiveUser = await testHelper.createTestUser();
       inactiveUser.isActive = false;
       inactiveUser.deletedOn = new Date();
       await inactiveUser.save();
+
+      authToken = testHelper.generateToken(authenticatedUser);
     });
 
     beforeEach(() => {
@@ -79,10 +80,11 @@ describe('User GetOne', () => {
 
           const { message, user } = res.body;
           expect(message).toBe('user has been successfully retrieved');
-          expect(user).toBeTruthy();
-          expect(user.username).toBe(testUser.username);
-          expect(user.displayName).toBe(testUser.displayName);
-          expect(user.createdOn).toBe(testUser.createdOn.toISOString());
+          expect(user).toEqual({
+            username: testUser.username,
+            displayName: testUser.displayName,
+            createdOn: testUser.createdOn.toISOString(),
+          });
           done();
         });
     });

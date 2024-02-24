@@ -192,19 +192,25 @@ describe('User Update', () => {
             return done(err);
           }
 
+          // Ensure the password was actually updated.
+          const updatedAuthenticatedUser = await User.findOne({
+            where: { id: authenticatedUser.id, isActive: true },
+          });
+          if (!updatedAuthenticatedUser) {
+            return done('updated user was not found in database');
+          }
+
           const { message, user } = res.body;
           expect(message).toBe('user has been successfully updated');
-          expect(user).toBeTruthy();
-          expect(user.username).toBe(authenticatedUser.username);
-          expect(user.displayName).toBe(authenticatedUser.displayName);
-          expect(user.createdOn).toBe(authenticatedUser.createdOn.toISOString());
-
-          // Ensure the password is actually updated.
-          const updatedAuthenticatedUser = await User.findOne({
-            where: { id: authenticatedUser.id },
+          expect(user).toEqual({
+            username: authenticatedUser.username,
+            displayName: authenticatedUser.displayName,
+            createdOn: authenticatedUser.createdOn.toISOString(),
+            updatedOn: updatedAuthenticatedUser.updatedOn?.toISOString(),
           });
-          expect(user.updatedOn).toBe(updatedAuthenticatedUser?.updatedOn?.toISOString()); // updatedOn in the response should match this user's updatedOn value.
-          expect(updatedAuthenticatedUser?.compareHash(newPassword)).toBe(true); // compareHash should return true for the new password value.
+
+          // compareHash should return true for the new password value.
+          expect(updatedAuthenticatedUser.compareHash(newPassword)).toBe(true);
           done();
         });
     });

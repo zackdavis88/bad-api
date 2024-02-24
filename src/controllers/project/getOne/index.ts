@@ -23,8 +23,17 @@ export const getProjectMiddleware = async (
 
 // This is used to return a requested projects details on GET /projects/:projectId
 const getOneProjectFlow = async (req: Request, res: Response) => {
-  const { id, name, description, createdOn, createdBy, updatedOn, updatedBy } =
-    req.project;
+  const {
+    id,
+    name,
+    description,
+    createdOn,
+    createdBy,
+    createdById,
+    updatedOn,
+    updatedBy,
+    updatedById,
+  } = req.project;
   return res.success('project has been successfully retrieved', {
     project: {
       id,
@@ -32,20 +41,20 @@ const getOneProjectFlow = async (req: Request, res: Response) => {
       description,
       createdOn,
       createdBy:
-        createdBy ?
+        createdById && createdBy ?
           {
             displayName: createdBy.displayName,
             username: createdBy.username,
           }
-        : undefined,
+        : null,
       updatedOn,
       updatedBy:
-        updatedBy ?
+        updatedById && updatedBy ?
           {
             displayName: updatedBy.displayName,
             username: updatedBy.username,
           }
-        : undefined,
+        : null,
       membershipCount: await req.project.countMemberships(),
     },
   });

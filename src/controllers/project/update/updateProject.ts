@@ -29,12 +29,12 @@ const updateProject: UpdateProject = async (user, project, name, description) =>
     description: project.description,
     createdOn: project.createdOn,
     createdBy:
-      project.createdBy ?
+      project.createdById && project.createdBy ?
         {
           username: project.createdBy.username,
           displayName: project.createdBy.displayName,
         }
-      : undefined,
+      : null,
     updatedOn: project.updatedOn,
     updatedBy: {
       username: user.username,

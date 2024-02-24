@@ -99,10 +99,12 @@ describe('Generate AuthToken', () => {
           const { message, user } = res.body;
           expect(message).toBe('user successfully authenticated');
           expect(res.headers['x-auth-token']).toBeTruthy();
-          expect(user).toBeTruthy();
-          expect(user.username).toBe(testUser.username);
-          expect(user.displayName).toBe(testUser.displayName);
-          expect(user.createdOn).toBe(testUser.createdOn.toISOString());
+          expect(user).toEqual({
+            username: testUser.username,
+            displayName: testUser.displayName,
+            createdOn: testUser.createdOn.toISOString(),
+            updatedOn: null,
+          });
           done();
         });
     });

@@ -23,20 +23,20 @@ const getAllProjects: GetAllProjects = async (paginationData) => {
     description: project.description,
     createdOn: project.createdOn,
     createdBy:
-      project.createdBy ?
+      project.createdById && project.createdBy ?
         {
           displayName: project.createdBy.displayName,
           username: project.createdBy.username,
         }
-      : undefined,
+      : null,
     updatedOn: project.updatedOn,
     updatedBy:
-      project.updatedBy ?
+      project.updatedById && project.updatedBy ?
         {
           displayName: project.updatedBy.displayName,
           username: project.updatedBy.username,
         }
-      : undefined,
+      : null,
   }));
 };
 

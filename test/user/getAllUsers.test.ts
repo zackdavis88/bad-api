@@ -8,26 +8,30 @@ const apiRoute = '/users';
 
 describe('User GetAll', () => {
   describe(`GET ${apiRoute}`, () => {
-    let testUser: User;
+    let userList: User[];
     let authToken: string;
 
     beforeAll(async () => {
-      testUser = await testHelper.createTestUser('Password1');
-      await testHelper.createTestUser('Password2');
-      await testHelper.createTestUser('Password3');
-      await testHelper.createTestUser('Password4');
-      await testHelper.createTestUser('Password5');
-      await testHelper.createTestUser('Password6');
-      await testHelper.createTestUser('Password7');
-      await testHelper.createTestUser('Password8');
-      await testHelper.createTestUser('Password9');
-      await testHelper.createTestUser('Password10');
-      authToken = testHelper.generateToken(testUser);
+      const authenticatedUser = await testHelper.createTestUser('Password1');
+      userList = [authenticatedUser].concat(
+        await testHelper.createTestUser('Password2'),
+        await testHelper.createTestUser('Password3'),
+        await testHelper.createTestUser('Password4'),
+        await testHelper.createTestUser('Password5'),
+        await testHelper.createTestUser('Password6'),
+        await testHelper.createTestUser('Password7'),
+        await testHelper.createTestUser('Password8'),
+        await testHelper.createTestUser('Password9'),
+        await testHelper.createTestUser('Password10'),
+      );
 
+      // Making an inactiveUser to ensure they are not included on the count.
       const inactiveUser = await testHelper.createTestUser();
       inactiveUser.isActive = false;
       inactiveUser.deletedOn = new Date();
       await inactiveUser.save();
+
+      authToken = testHelper.generateToken(authenticatedUser);
     });
 
     afterAll(async () => {
@@ -55,21 +59,19 @@ describe('User GetAll', () => {
             return done(err);
           }
 
-          const { message, users, page, itemsPerPage, totalPages, totalItems } = res.body;
+          const { message, ...userListData } = res.body;
           expect(message).toBe('user list has been successfully retrieved');
-          expect(page).toBe(1);
-          expect(itemsPerPage).toBe(10);
-          expect(totalPages).toBe(1);
-          expect(totalItems).toBe(10);
-          expect(users).toBeTruthy();
-          expect(users.length).toBe(10);
-          const user = users[0];
-          expect(user.username).toBeTruthy();
-          expect(user.displayName).toBeTruthy();
-          expect(user.createdOn).toBeTruthy();
-          expect(!user.id).toBeTruthy();
-          expect(!user.hash).toBeTruthy();
-          expect(!user.apiKey).toBeTruthy();
+          expect(userListData).toEqual({
+            page: 1,
+            itemsPerPage: 10,
+            totalPages: 1,
+            totalItems: 10,
+            users: userList.map((user) => ({
+              username: user.username,
+              displayName: user.displayName,
+              createdOn: user.createdOn.toISOString(),
+            })),
+          });
           done();
         });
     });

@@ -11,7 +11,8 @@ describe('Project GetAll', () => {
     let authenticatedUser: User;
     let testUser1: User;
     let testUser2: User;
-    let testProject: Project;
+    let sampleProject1: Project;
+    let sampleProject2: Project;
     let authToken: string;
 
     beforeAll(async () => {
@@ -39,20 +40,20 @@ describe('Project GetAll', () => {
         'test project 4',
         'project4 was generated via automated testing.',
       );
-      testProject = await testHelper.createTestProject(
+      sampleProject1 = await testHelper.createTestProject(
         testUser1,
         'test project 5',
         'project5 was generated via automated testing.',
       );
-      await testHelper.createTestProject(
+      sampleProject2 = await testHelper.createTestProject(
         testUser2,
         'test project 6',
         'project6 was generated via automated testing.',
       );
 
-      testProject.updatedById = testUser2.id;
-      testProject.updatedOn = new Date();
-      await testProject.save();
+      sampleProject1.updatedById = testUser2.id;
+      sampleProject1.updatedOn = new Date();
+      await sampleProject1.save();
 
       const inactiveProject = await testHelper.createTestProject(authenticatedUser);
       inactiveProject.isActive = false;
@@ -88,30 +89,42 @@ describe('Project GetAll', () => {
             return done(err);
           }
 
-          const { message, projects, page, itemsPerPage, totalPages, totalItems } =
-            res.body;
+          const { message, ...projectListData } = res.body;
           expect(message).toBe('project list has been successfully retrieved');
-          expect(page).toBe(3);
-          expect(itemsPerPage).toBe(2);
-          expect(totalPages).toBe(3);
-          expect(totalItems).toBe(6);
-          expect(projects).toBeTruthy();
-          expect(projects.length).toBe(2);
-          const project = projects[0];
-          expect(project.id).toBe(testProject.id);
-          expect(project.name).toBe(testProject.name);
-          expect(project.description).toBe(testProject.description);
-
-          expect(project.createdOn).toBe(testProject.createdOn.toISOString());
-          expect(project.createdBy).toEqual({
-            username: testUser1.username,
-            displayName: testUser1.displayName,
-          });
-
-          expect(project.updatedOn).toBe(testProject.updatedOn?.toISOString());
-          expect(project.updatedBy).toEqual({
-            username: testUser2.username,
-            displayName: testUser2.displayName,
+          expect(projectListData).toEqual({
+            page: 3,
+            itemsPerPage: 2,
+            totalPages: 3,
+            totalItems: 6,
+            projects: [
+              {
+                id: sampleProject1.id,
+                name: sampleProject1.name,
+                description: sampleProject1.description,
+                createdOn: sampleProject1.createdOn.toISOString(),
+                createdBy: {
+                  username: testUser1.username,
+                  displayName: testUser1.displayName,
+                },
+                updatedOn: sampleProject1.updatedOn?.toISOString(),
+                updatedBy: {
+                  username: testUser2.username,
+                  displayName: testUser2.displayName,
+                },
+              },
+              {
+                id: sampleProject2.id,
+                name: sampleProject2.name,
+                description: sampleProject2.description,
+                createdOn: sampleProject2.createdOn.toISOString(),
+                createdBy: {
+                  username: testUser2.username,
+                  displayName: testUser2.displayName,
+                },
+                updatedOn: null,
+                updatedBy: null,
+              },
+            ],
           });
 
           done();

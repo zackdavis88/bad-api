@@ -190,38 +190,34 @@ describe('Project Remove', () => {
             return done(err);
           }
 
+          // Ensure the project was actually removed.
+          const removedTestProject = await Project.findOne({
+            where: { id: testProject.id, isActive: false },
+          });
+          if (!removedTestProject) {
+            return done('removed project was not found in database');
+          }
+
           const { message, project } = res.body;
           expect(message).toBe('project has been successfully removed');
-          expect(project).toBeTruthy();
-          expect(project.id).toBe(testProject.id);
-          expect(project.name).toBe(testProject.name);
-          expect(project.description).toBe(testProject.description);
-
-          expect(project.createdOn).toBe(testProject.createdOn.toISOString());
-          expect(project.createdBy).toBeTruthy();
-          expect(project.createdBy).toEqual({
-            username: authenticatedUser.username,
-            displayName: authenticatedUser.displayName,
+          expect(project).toEqual({
+            id: testProject.id,
+            name: testProject.name,
+            description: testProject.description,
+            createdOn: testProject.createdOn.toISOString(),
+            createdBy: {
+              username: authenticatedUser.username,
+              displayName: authenticatedUser.displayName,
+            },
+            updatedOn: null,
+            updatedBy: null,
+            deletedOn: removedTestProject.deletedOn?.toISOString(),
+            deletedBy: {
+              username: authenticatedUser.username,
+              displayName: authenticatedUser.displayName,
+            },
           });
-
-          expect(project.updatedOn).toBeFalsy();
-          expect(project.updatedBy).toEqual({
-            username: null,
-            displayName: null,
-          });
-
-          expect(project.deletedOn).toBeTruthy();
-          expect(project.deletedBy).toEqual({
-            username: authenticatedUser.username,
-            displayName: authenticatedUser.displayName,
-          });
-
-          // Ensure the user is actually removed.
-          const removedTestProject = await Project.findOne({
-            where: { id: testProject.id },
-          });
-          expect(project.deletedOn).toBe(removedTestProject?.deletedOn?.toISOString());
-          expect(removedTestProject?.isActive).toBe(false);
+          expect(removedTestProject.deletedById).toBe(authenticatedUser.id);
           done();
         });
     });
