@@ -23,6 +23,11 @@ describe('User GetAll', () => {
       await testHelper.createTestUser('Password9');
       await testHelper.createTestUser('Password10');
       authToken = testHelper.generateToken(testUser);
+
+      const inactiveUser = await testHelper.createTestUser();
+      inactiveUser.isActive = false;
+      inactiveUser.deletedOn = new Date();
+      await inactiveUser.save();
     });
 
     afterAll(async () => {
@@ -54,8 +59,8 @@ describe('User GetAll', () => {
           expect(message).toBe('user list has been successfully retrieved');
           expect(page).toBe(1);
           expect(itemsPerPage).toBe(10);
-          expect(totalPages).toBeGreaterThanOrEqual(1);
-          expect(totalItems).toBeGreaterThanOrEqual(10);
+          expect(totalPages).toBe(1);
+          expect(totalItems).toBe(10);
           expect(users).toBeTruthy();
           expect(users.length).toBe(10);
           const user = users[0];

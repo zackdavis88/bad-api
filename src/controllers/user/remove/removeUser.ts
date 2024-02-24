@@ -1,11 +1,7 @@
 import { User } from 'src/models';
 import { UserData } from 'src/server/types';
 
-interface DeleteUserData extends UserData {
-  deletedOn: Date;
-}
-
-type RemoveUser = (user: User) => Promise<DeleteUserData>;
+type RemoveUser = (user: User) => Promise<UserData>;
 
 const removeUser: RemoveUser = async (user) => {
   user.isActive = false;
