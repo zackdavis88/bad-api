@@ -52,6 +52,12 @@ export const initializeModels = (sequelize: Sequelize) => {
     as: 'project',
   });
 
+  Project.hasOne(Membership, {
+    as: 'authUserMembership',
+    foreignKey: 'projectId',
+    onDelete: 'CASCADE',
+  });
+
   User.hasMany(Membership, { as: 'createdMemberships', foreignKey: 'createdById' });
   Membership.belongsTo(User, { as: 'createdBy', foreignKey: 'createdById' });
 
@@ -66,3 +72,4 @@ export const initializeModelsAndSync = async (sequelize: Sequelize) => {
 
 export { User } from './user';
 export { Project } from './project';
+export { Membership } from './membership';

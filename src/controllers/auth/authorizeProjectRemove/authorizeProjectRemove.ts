@@ -1,22 +1,12 @@
-import { Project, User } from 'src/models';
+import { Project } from 'src/models';
 import { AuthorizationError } from 'src/server/utils/errors';
 
-type AuthorizeProjectRemove = (
-  authenticatedUser: User,
-  requestedProject: Project,
-) => Promise<void>;
+type AuthorizeProjectRemove = (requestedProject: Project) => void;
 
-const authorizeProjectRemove: AuthorizeProjectRemove = async (
-  authenticatedUser,
-  requestedProject,
-) => {
-  const membership = (
-    await requestedProject.getMemberships({
-      where: { userId: authenticatedUser.id },
-    })
-  )[0];
+const authorizeProjectRemove: AuthorizeProjectRemove = (requestedProject) => {
+  const authUserMembership = requestedProject.authUserMembership;
 
-  if (!membership || !membership.isProjectAdmin) {
+  if (!authUserMembership || !authUserMembership.isProjectAdmin) {
     throw new AuthorizationError('you do not have permission to remove this project');
   }
 };

@@ -1,22 +1,15 @@
-import { Project, User } from 'src/models';
+import { Project } from 'src/models';
 import { AuthorizationError } from 'src/server/utils/errors';
 
-type AuthorizeProjectUpdate = (
-  authenticatedUser: User,
-  requestedProject: Project,
-) => Promise<void>;
+type AuthorizeProjectUpdate = (requestedProject: Project) => void;
 
-const authorizeProjectUpdate: AuthorizeProjectUpdate = async (
-  authenticatedUser,
-  requestedProject,
-) => {
-  const membership = (
-    await requestedProject.getMemberships({
-      where: { userId: authenticatedUser.id },
-    })
-  )[0];
+const authorizeProjectUpdate: AuthorizeProjectUpdate = (requestedProject) => {
+  const authUserMembership = requestedProject.authUserMembership;
 
-  if (!membership || (!membership.isProjectAdmin && !membership.isProjectManager)) {
+  if (
+    !authUserMembership ||
+    (!authUserMembership.isProjectAdmin && !authUserMembership.isProjectManager)
+  ) {
     throw new AuthorizationError('you do not have permission to update this project');
   }
 };

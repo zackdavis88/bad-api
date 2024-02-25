@@ -1,15 +1,26 @@
-import { Project, User } from 'src/models';
+import { Project, User, Membership } from 'src/models';
 import { NotFoundError } from 'src/server/utils/errors';
+import { Includeable } from 'sequelize';
 
-type GetOneProject = (projectId: string) => Promise<Project>;
+type GetOneProject = (projectId: string, authUser: User) => Promise<Project>;
 
-const getOneProject: GetOneProject = async (projectId) => {
+const getOneProject: GetOneProject = async (projectId, authUser) => {
+  let include: Includeable[] = [
+    { model: User.scope('publicAttributes'), as: 'createdBy' },
+    { model: User.scope('publicAttributes'), as: 'updatedBy' },
+  ];
+  if (authUser) {
+    include = include.concat({
+      model: Membership,
+      as: 'authUserMembership',
+      required: false,
+      where: { userId: authUser.id },
+    });
+  }
+
   const project = await Project.findOne({
     where: { id: projectId, isActive: true },
-    include: [
-      { model: User.scope('publicAttributes'), as: 'createdBy' },
-      { model: User.scope('publicAttributes'), as: 'updatedBy' },
-    ],
+    include,
   });
 
   if (!project) {

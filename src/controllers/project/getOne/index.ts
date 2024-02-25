@@ -13,7 +13,7 @@ export const getProjectMiddleware = async (
 ) => {
   try {
     getOneProjectValidation(req.params.projectId);
-    const project = await getOneProject(req.params.projectId);
+    const project = await getOneProject(req.params.projectId, req.user);
     req.project = project;
     next();
   } catch (error) {
