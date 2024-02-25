@@ -10,13 +10,9 @@ const authorizeProjectRemove: AuthorizeProjectRemove = async (
   authenticatedUser,
   requestedProject,
 ) => {
-  const membership = (
-    await requestedProject.getMemberships({
-      where: { userId: authenticatedUser.id },
-    })
-  )[0];
+  const authUserMembership = requestedProject.authUserMembership;
 
-  if (!membership || !membership.isProjectAdmin) {
+  if (!authUserMembership || !authUserMembership.isProjectAdmin) {
     throw new AuthorizationError('you do not have permission to remove this project');
   }
 };

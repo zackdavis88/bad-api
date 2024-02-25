@@ -23,6 +23,7 @@ class Project extends Model<InferAttributes<Project>, InferCreationAttributes<Pr
   declare createMembership: HasManyCreateAssociationMixin<Membership>;
   declare getMemberships: HasManyGetAssociationsMixin<Membership>;
   declare countMemberships: HasManyCountAssociationsMixin;
+  declare authUserMembership: NonAttribute<Membership> | null;
 
   declare createdById: ForeignKey<User['id']>;
   declare createdBy: NonAttribute<User>;

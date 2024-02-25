@@ -10,13 +10,12 @@ const authorizeProjectUpdate: AuthorizeProjectUpdate = async (
   authenticatedUser,
   requestedProject,
 ) => {
-  const membership = (
-    await requestedProject.getMemberships({
-      where: { userId: authenticatedUser.id },
-    })
-  )[0];
+  const authUserMembership = requestedProject.authUserMembership;
 
-  if (!membership || (!membership.isProjectAdmin && !membership.isProjectManager)) {
+  if (
+    !authUserMembership ||
+    (!authUserMembership.isProjectAdmin && !authUserMembership.isProjectManager)
+  ) {
     throw new AuthorizationError('you do not have permission to update this project');
   }
 };
