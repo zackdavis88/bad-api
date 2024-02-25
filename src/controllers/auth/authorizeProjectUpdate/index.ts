@@ -7,7 +7,7 @@ const authorizeProjectUpdateFlow = async (
   next: NextFunction,
 ) => {
   try {
-    await authorizeProjectUpdate(req.user, req.project);
+    await authorizeProjectUpdate(req.project);
     next();
   } catch (error) {
     return res.sendError(error);

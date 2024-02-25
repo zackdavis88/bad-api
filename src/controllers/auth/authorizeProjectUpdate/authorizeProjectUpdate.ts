@@ -1,15 +1,9 @@
-import { Project, User } from 'src/models';
+import { Project } from 'src/models';
 import { AuthorizationError } from 'src/server/utils/errors';
 
-type AuthorizeProjectUpdate = (
-  authenticatedUser: User,
-  requestedProject: Project,
-) => Promise<void>;
+type AuthorizeProjectUpdate = (requestedProject: Project) => Promise<void>;
 
-const authorizeProjectUpdate: AuthorizeProjectUpdate = async (
-  authenticatedUser,
-  requestedProject,
-) => {
+const authorizeProjectUpdate: AuthorizeProjectUpdate = async (requestedProject) => {
   const authUserMembership = requestedProject.authUserMembership;
 
   if (

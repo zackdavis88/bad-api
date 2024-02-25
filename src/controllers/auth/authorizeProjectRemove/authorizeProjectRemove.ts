@@ -1,15 +1,9 @@
-import { Project, User } from 'src/models';
+import { Project } from 'src/models';
 import { AuthorizationError } from 'src/server/utils/errors';
 
-type AuthorizeProjectRemove = (
-  authenticatedUser: User,
-  requestedProject: Project,
-) => Promise<void>;
+type AuthorizeProjectRemove = (requestedProject: Project) => Promise<void>;
 
-const authorizeProjectRemove: AuthorizeProjectRemove = async (
-  authenticatedUser,
-  requestedProject,
-) => {
+const authorizeProjectRemove: AuthorizeProjectRemove = async (requestedProject) => {
   const authUserMembership = requestedProject.authUserMembership;
 
   if (!authUserMembership || !authUserMembership.isProjectAdmin) {

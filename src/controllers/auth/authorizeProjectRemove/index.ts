@@ -7,7 +7,7 @@ const authorizeProjectRemoveFlow = async (
   next: NextFunction,
 ) => {
   try {
-    await authorizeProjectRemove(req.user, req.project);
+    await authorizeProjectRemove(req.project);
     next();
   } catch (error) {
     return res.sendError(error);
