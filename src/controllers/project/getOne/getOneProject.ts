@@ -6,8 +6,8 @@ type GetOneProject = (projectId: string, authUser: User) => Promise<Project>;
 
 const getOneProject: GetOneProject = async (projectId, authUser) => {
   let include: Includeable[] = [
-    { model: User.scope('publicAttributes'), as: 'createdBy' },
-    { model: User.scope('publicAttributes'), as: 'updatedBy' },
+    { model: User.scope('publicAttributes'), as: 'createdBy', required: false },
+    { model: User.scope('publicAttributes'), as: 'updatedBy', required: false },
   ];
   if (authUser) {
     include = include.concat({
