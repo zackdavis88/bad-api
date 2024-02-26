@@ -21,48 +21,64 @@ export const initializeModels = (sequelize: Sequelize) => {
   /*  Sequelize is weird. These associations need to be done outside of the model files
    *  and after model initialization because of our code structure.
    */
-  // Project associations
+
+  // Project -> User associations: createdBy
   User.hasMany(Project, { as: 'createdProjects', foreignKey: 'createdById' });
-  Project.belongsTo(User, { as: 'createdBy', foreignKey: 'createdById' });
+  User.hasOne(Project, { as: 'createdProject', foreignKey: 'createdById' });
+  Project.belongsTo(User, { as: 'createdBy' });
 
+  // Project -> User associations: updatedBy
   User.hasMany(Project, { as: 'updatedProjects', foreignKey: 'updatedById' });
-  Project.belongsTo(User, { as: 'updatedBy', foreignKey: 'updatedById' });
+  User.hasOne(Project, { as: 'updatedProject', foreignKey: 'updatedById' });
+  Project.belongsTo(User, { as: 'updatedBy' });
 
+  // Project -> User associations: deletedBy
   User.hasMany(Project, { as: 'deletedProjects', foreignKey: 'deletedById' });
-  Project.belongsTo(User, { as: 'deletedBy', foreignKey: 'deletedById' });
+  User.hasOne(Project, { as: 'deletedProject', foreignKey: 'deletedById' });
+  Project.belongsTo(User, { as: 'deletedBy' });
 
-  // Membership associations
+  // Membership -> User associations: createdBy
+  User.hasMany(Membership, { as: 'createdMemberships', foreignKey: 'createdById' });
+  User.hasOne(Membership, { as: 'createdMembership', foreignKey: 'createdById' });
+  Membership.belongsTo(User, { as: 'createdBy' });
+
+  // Membership -> User associations: updatedBy
+  User.hasMany(Membership, { as: 'updatedMemberships', foreignKey: 'updatedById' });
+  User.hasOne(Membership, { as: 'updatedMembership', foreignKey: 'updatedById' });
+  Membership.belongsTo(User, { as: 'updatedBy' });
+
+  // Membership -> User associations: memberships
   User.hasMany(Membership, {
     as: 'memberships',
     foreignKey: 'userId',
     onDelete: 'CASCADE',
   });
-  Membership.belongsTo(User, {
+  User.hasOne(Membership, {
     foreignKey: 'userId',
+    onDelete: 'CASCADE',
+  });
+  Membership.belongsTo(User, {
     as: 'user',
   });
 
+  // Membership -> User associations: memberships
   Project.hasMany(Membership, {
     as: 'memberships',
     foreignKey: 'projectId',
     onDelete: 'CASCADE',
   });
-  Membership.belongsTo(Project, {
+  Project.hasOne(Membership, {
     foreignKey: 'projectId',
-    as: 'project',
+    onDelete: 'CASCADE',
   });
-
   Project.hasOne(Membership, {
     as: 'authUserMembership',
     foreignKey: 'projectId',
     onDelete: 'CASCADE',
   });
-
-  User.hasMany(Membership, { as: 'createdMemberships', foreignKey: 'createdById' });
-  Membership.belongsTo(User, { as: 'createdBy', foreignKey: 'createdById' });
-
-  User.hasMany(Membership, { as: 'updatedMemberships', foreignKey: 'updatedById' });
-  Membership.belongsTo(User, { as: 'updatedBy', foreignKey: 'updatedById' });
+  Membership.belongsTo(Project, {
+    as: 'project',
+  });
 };
 
 export const initializeModelsAndSync = async (sequelize: Sequelize) => {

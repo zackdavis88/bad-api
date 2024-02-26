@@ -12,8 +12,8 @@ const getAllProjects: GetAllProjects = async (paginationData) => {
     offset: pageOffset,
     order: [['createdOn', 'ASC']],
     include: [
-      { model: User.scope('publicAttributes'), as: 'createdBy' },
-      { model: User.scope('publicAttributes'), as: 'updatedBy' },
+      { model: User.scope('publicAttributes'), as: 'createdBy', required: false },
+      { model: User.scope('publicAttributes'), as: 'updatedBy', required: false },
     ],
   });
 

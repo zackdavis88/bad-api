@@ -5,11 +5,13 @@ import {
   InferCreationAttributes,
   CreationOptional,
   DataTypes,
-  HasManyCreateAssociationMixin,
-  HasManyGetAssociationsMixin,
-  HasManyCountAssociationsMixin,
   ForeignKey,
   NonAttribute,
+  BelongsToGetAssociationMixin,
+  HasManyGetAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  HasManyCreateAssociationMixin,
+  HasOneGetAssociationMixin,
 } from 'sequelize';
 import User from 'src/models/user/user';
 import Membership from 'src/models/membership/membership';
@@ -18,24 +20,32 @@ class Project extends Model<InferAttributes<Project>, InferCreationAttributes<Pr
   declare id: CreationOptional<string>;
   declare isActive: CreationOptional<boolean>;
   declare name: string;
-  declare description: CreationOptional<string> | null;
+  declare description: CreationOptional<string | null>;
 
+  // User associations - BelongsTo
+  declare getCreatedBy: BelongsToGetAssociationMixin<User | null>;
+  declare createdById: ForeignKey<User['id']>;
+  declare createdBy: NonAttribute<User | null>;
+  declare createdOn: CreationOptional<Date>;
+
+  declare getUpdatedBy: BelongsToGetAssociationMixin<User | null>;
+  declare updatedById: ForeignKey<User['id'] | null>;
+  declare updatedBy: NonAttribute<User | null>;
+  declare updatedOn: CreationOptional<Date | null>;
+
+  declare getDeletedBy: BelongsToGetAssociationMixin<User | null>;
+  declare deletedById: ForeignKey<User['id'] | null>;
+  declare deletedBy: NonAttribute<User | null>;
+  declare deletedOn: CreationOptional<Date | null>;
+
+  // Membership associations - HasMany
   declare createMembership: HasManyCreateAssociationMixin<Membership>;
   declare getMemberships: HasManyGetAssociationsMixin<Membership>;
   declare countMemberships: HasManyCountAssociationsMixin;
-  declare authUserMembership: NonAttribute<Membership> | null;
 
-  declare createdById: ForeignKey<User['id']>;
-  declare createdBy: NonAttribute<User>;
-  declare createdOn: CreationOptional<Date>;
-
-  declare updatedById: ForeignKey<User['id']> | null;
-  declare updatedBy: NonAttribute<User> | null;
-  declare updatedOn: CreationOptional<Date> | null;
-
-  declare deletedById: ForeignKey<User['id']> | null;
-  declare deletedBy: NonAttribute<User> | null;
-  declare deletedOn: CreationOptional<Date> | null;
+  // Membership associations - HasOne
+  declare getMembership: HasOneGetAssociationMixin<Membership | null>;
+  declare authUserMembership: NonAttribute<Membership | null>;
 }
 
 export const initializeProject = (sequelize: Sequelize) => {
