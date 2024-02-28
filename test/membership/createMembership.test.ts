@@ -333,10 +333,10 @@ describe('Membership Create', () => {
             return done(err);
           }
 
-          const createdMembership = await Membership.findOne({
-            where: { userId: nonMemberUser.id, projectId: testProject.id },
+          const createdMembership = await testProject.getMembership({
+            where: { userId: nonMemberUser.id },
           });
-          if (!createdMembership) {
+          if (createdMembership === null) {
             return done('created membership was not found in database');
           }
 
@@ -379,10 +379,10 @@ describe('Membership Create', () => {
             return done(err);
           }
 
-          const createdMembership = await Membership.findOne({
-            where: { userId: nonMemberUser.id, projectId: testProject.id },
+          const createdMembership = await testProject.getMembership({
+            where: { userId: nonMemberUser.id },
           });
-          if (!createdMembership) {
+          if (createdMembership === null) {
             return done('created membership was not found in database');
           }
 
@@ -424,10 +424,10 @@ describe('Membership Create', () => {
             return done(err);
           }
 
-          const createdMembership = await Membership.findOne({
-            where: { userId: nonMemberUser.id, projectId: testProject.id },
+          const createdMembership = await testProject.getMembership({
+            where: { userId: nonMemberUser.id },
           });
-          if (!createdMembership) {
+          if (createdMembership === null) {
             return done('created membership was not found in database');
           }
 
@@ -470,10 +470,10 @@ describe('Membership Create', () => {
             return done(err);
           }
 
-          const createdMembership = await Membership.findOne({
-            where: { userId: nonMemberUser.id, projectId: testProject.id },
+          const createdMembership = await testProject.getMembership({
+            where: { userId: nonMemberUser.id },
           });
-          if (!createdMembership) {
+          if (createdMembership === null) {
             return done('created membership was not found in database');
           }
 
@@ -515,10 +515,10 @@ describe('Membership Create', () => {
             return done(err);
           }
 
-          const createdMembership = await Membership.findOne({
-            where: { userId: nonMemberUser.id, projectId: testProject.id },
+          const createdMembership = await testProject.getMembership({
+            where: { userId: nonMemberUser.id },
           });
-          if (!createdMembership) {
+          if (createdMembership === null) {
             return done('created membership was not found in database');
           }
 
