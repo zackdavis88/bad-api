@@ -1,15 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
 import { AuthorizationAction } from 'src/server/types';
-import authorizeMembershipAction from './authorizeMembershipAction';
+import authorizeMembershipCreate from './authorizeMembershipCreate';
 
 const authorizeMembershipActionFlow = (action: AuthorizationAction) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      authorizeMembershipAction(
-        req.project.authUserMembership,
-        req.body.isProjectAdmin,
-        action,
-      );
+      if (action === AuthorizationAction.CREATE) {
+        const isAdminRequired = req.body.isProjectAdmin === true;
+        authorizeMembershipCreate(req.project.authUserMembership, isAdminRequired);
+        return next();
+      }
+
+      // TODO: More action handling here for UPDATE and DELETE
       next();
     } catch (error) {
       return res.sendError(error);

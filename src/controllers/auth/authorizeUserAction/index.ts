@@ -1,11 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
 import { AuthorizationAction } from 'src/server/types';
-import authorizeUserAction from './authorizeUserAction';
+import authorizeUserUpdateOrRemove from './authorizeUserUpdateOrRemove';
 
 const authorizeUserActionFlow = (action: AuthorizationAction) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      authorizeUserAction(req.user.username, req.params.username, action);
+      if (
+        action === AuthorizationAction.UPDATE ||
+        action === AuthorizationAction.DELETE
+      ) {
+        authorizeUserUpdateOrRemove(req.user.username, req.params.username);
+      }
+
       next();
     } catch (error) {
       return res.sendError(error);
