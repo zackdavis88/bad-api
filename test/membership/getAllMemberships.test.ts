@@ -40,53 +40,42 @@ describe('Membership GetAll', () => {
       await inactiveProject.save();
 
       testProject = await testHelper.createTestProject(projectMember1);
-      const bulkMemberships = await Membership.bulkCreate([
-        {
-          projectId: testProject.id,
-          userId: projectMember2.id,
-          isProjectAdmin: true,
-          createdById: projectMember1.id,
-        },
-        {
-          projectId: testProject.id,
-          userId: projectMember3.id,
-          isProjectAdmin: true,
-          createdById: projectMember2.id,
-        },
-        {
-          projectId: testProject.id,
-          userId: projectMember4.id,
-          isProjectManager: true,
-          createdById: projectMember3.id,
-        },
-        {
-          projectId: testProject.id,
-          userId: projectMember5.id,
-          createdById: projectMember1.id,
-        },
-        {
-          projectId: testProject.id,
-          userId: projectMember6.id,
-          isProjectManager: true,
-          createdById: projectMember4.id,
-        },
-        {
-          projectId: testProject.id,
-          userId: projectMember7.id,
-          isProjectManager: true,
-          createdById: projectMember6.id,
-        },
-        {
-          projectId: testProject.id,
-          userId: projectMember8.id,
-          createdById: projectMember3.id,
-          updatedOn: new Date(),
-          updatedById: projectMember1.id,
-        },
-      ]);
-      expectedMembership1 = bulkMemberships[4];
-      expectedMembership2 = bulkMemberships[5];
-      expectedMembership3 = bulkMemberships[6];
+      await testProject.createMembership({
+        userId: projectMember2.id,
+        isProjectAdmin: true,
+        createdById: projectMember1.id,
+      });
+      await testProject.createMembership({
+        userId: projectMember3.id,
+        isProjectAdmin: true,
+        createdById: projectMember2.id,
+      });
+      await testProject.createMembership({
+        userId: projectMember4.id,
+        isProjectManager: true,
+        createdById: projectMember3.id,
+      });
+      await testProject.createMembership({
+        userId: projectMember5.id,
+        createdById: projectMember1.id,
+      });
+      expectedMembership1 = await testProject.createMembership({
+        userId: projectMember6.id,
+        isProjectManager: true,
+        createdById: projectMember4.id,
+      });
+      expectedMembership2 = await testProject.createMembership({
+        userId: projectMember7.id,
+        isProjectManager: true,
+        createdById: projectMember6.id,
+      });
+      expectedMembership3 = await testProject.createMembership({
+        projectId: testProject.id,
+        userId: projectMember8.id,
+        createdById: projectMember3.id,
+        updatedOn: new Date(),
+        updatedById: projectMember1.id,
+      });
 
       authToken = testHelper.generateToken(testUser);
     });
@@ -123,7 +112,7 @@ describe('Membership GetAll', () => {
     });
 
     it('should reject requests when the requested project does not exist', (done) => {
-      apiRoute = `/projects/${testHelper.generateUUID()}`;
+      apiRoute = `/projects/${testHelper.generateUUID()}/memberships`;
       request(serverUrl).get(apiRoute).set('x-auth-token', authToken).expect(
         404,
         {
@@ -135,7 +124,7 @@ describe('Membership GetAll', () => {
     });
 
     it('should reject requests when the requested project is not active', (done) => {
-      apiRoute = `/projects/${inactiveProject.id}`;
+      apiRoute = `/projects/${inactiveProject.id}/memberships`;
       request(serverUrl).get(apiRoute).set('x-auth-token', authToken).expect(
         404,
         {

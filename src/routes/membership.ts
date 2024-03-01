@@ -7,6 +7,13 @@ const configureMembershipRoutes = (router: Router) => {
     .all(AuthController.authenticateToken, ProjectController.getProjectMiddleware)
     .get(MembershipController.getAll)
     .post(AuthController.authorizeMembershipCreate, MembershipController.create);
+
+  router
+    .route('/projects/:projectId/memberships/:membershipId')
+    .all(AuthController.authenticateToken, ProjectController.getProjectMiddleware)
+    .get(MembershipController.getOne)
+    .post()
+    .delete();
 };
 
 export default configureMembershipRoutes;
