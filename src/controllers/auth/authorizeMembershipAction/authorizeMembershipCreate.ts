@@ -2,16 +2,14 @@ import { Project } from 'src/models';
 import { AuthorizationError } from 'src/server/utils/errors';
 
 type AuthorizeMembershipCreate = (
-  project: Project,
+  authUserMembership: Project['authUserMembership'],
   adminPrivilegeRequired: boolean,
 ) => void;
 
 const authorizeMembershipCreate: AuthorizeMembershipCreate = (
-  project,
+  authUserMembership,
   adminPrivilegeRequired,
 ) => {
-  const authUserMembership = project.authUserMembership;
-
   if (
     adminPrivilegeRequired &&
     (!authUserMembership || !authUserMembership.isProjectAdmin)

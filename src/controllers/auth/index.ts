@@ -4,7 +4,7 @@ import { default as getAuthenticationDetails } from './getAuthenticationDetails'
 import { default as authorizeUserUpdate } from './authorizeUserUpdate';
 import { default as authorizeProjectUpdate } from './authorizeProjectUpdate';
 import { default as authorizeProjectRemove } from './authorizeProjectRemove';
-import { default as authorizeMembershipCreate } from './authorizeMembershipCreate';
+import { default as authorizeMembershipAction } from './authorizeMembershipAction';
 
 export default {
   generateToken,
@@ -13,5 +13,5 @@ export default {
   authorizeUserUpdate,
   authorizeProjectUpdate,
   authorizeProjectRemove,
-  authorizeMembershipCreate,
+  authorizeMembershipAction,
 };

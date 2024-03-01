@@ -18,6 +18,13 @@ export interface ProjectData {
   deletedBy?: Pick<UserData, 'username' | 'displayName'> | null;
 }
 
+export enum AuthorizationAction {
+  CREATE = 'create',
+  READ = 'read',
+  UPDATE = 'update',
+  DELETE = 'delete',
+}
+
 export interface MembershipData {
   id: string;
   user: Pick<UserData, 'username' | 'displayName'>;
