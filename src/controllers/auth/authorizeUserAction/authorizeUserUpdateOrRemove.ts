@@ -1,11 +1,11 @@
 import { AuthorizationError } from 'src/server/utils/errors';
 
-type AuthorizeUserUpdate = (
+type AuthorizeUserUpdateOrRemove = (
   authenticatedUsername: string,
   requestedUsername: string,
 ) => void;
 
-const authorizeUserUpdate: AuthorizeUserUpdate = (
+const authorizeUserUpdateOrRemove: AuthorizeUserUpdateOrRemove = (
   authenticatedUsername,
   requestedUsername,
 ) => {
@@ -14,4 +14,4 @@ const authorizeUserUpdate: AuthorizeUserUpdate = (
   }
 };
 
-export default authorizeUserUpdate;
+export default authorizeUserUpdateOrRemove;
