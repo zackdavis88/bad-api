@@ -1,11 +1,7 @@
-import { User, Project } from 'src/models';
-import { MembershipData } from 'src/server/types';
+import { User, Project, Membership } from 'src/models';
 import { NotFoundError } from 'src/server/utils/errors';
 
-type GetOneMembership = (
-  project: Project,
-  membershipId: string,
-) => Promise<MembershipData>;
+type GetOneMembership = (project: Project, membershipId: string) => Promise<Membership>;
 
 const getOneMembership: GetOneMembership = async (project, membershipId) => {
   const membership = await project.getMembership({
@@ -21,37 +17,7 @@ const getOneMembership: GetOneMembership = async (project, membershipId) => {
     throw new NotFoundError('requested membership not found');
   }
 
-  const membershipData = {
-    id: membership.id,
-    user: {
-      username: membership.user.username,
-      displayName: membership.user.displayName,
-    },
-    project: {
-      id: project.id,
-      name: project.name,
-    },
-    isProjectAdmin: membership.isProjectAdmin,
-    isProjectManager: membership.isProjectManager,
-    createdOn: membership.createdOn,
-    createdBy:
-      membership.createdById && membership.createdBy ?
-        {
-          username: membership.createdBy.username,
-          displayName: membership.createdBy.displayName,
-        }
-      : null,
-    updatedOn: membership.updatedOn,
-    updatedBy:
-      membership.updatedById && membership.updatedBy ?
-        {
-          username: membership.updatedBy.username,
-          displayName: membership.updatedBy.displayName,
-        }
-      : null,
-  };
-
-  return membershipData;
+  return membership;
 };
 
 export default getOneMembership;

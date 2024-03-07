@@ -13,9 +13,13 @@ const configureMembershipRoutes = (router: Router) => {
 
   router
     .route('/projects/:projectId/memberships/:membershipId')
-    .all(AuthController.authenticateToken, ProjectController.getProjectMiddleware)
+    .all(
+      AuthController.authenticateToken,
+      ProjectController.getProjectMiddleware,
+      MembershipController.getMembershipMiddleware,
+    )
     .get(MembershipController.getOne)
-    .post()
+    .post(AuthController.authorizeMembershipAction(AuthorizationAction.UPDATE))
     .delete();
 };
 
