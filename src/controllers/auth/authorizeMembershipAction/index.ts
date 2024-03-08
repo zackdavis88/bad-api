@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { AuthorizationAction } from 'src/server/types';
 import authorizeMembershipCreate from './authorizeMembershipCreate';
+import authorizeMembershipUpdate from './authorizeMembershipUpdate';
 
 const authorizeMembershipActionFlow = (action: AuthorizationAction) => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -11,7 +12,15 @@ const authorizeMembershipActionFlow = (action: AuthorizationAction) => {
         return next();
       }
 
-      // TODO: More action handling here for UPDATE and DELETE
+      if (action === AuthorizationAction.UPDATE) {
+        authorizeMembershipUpdate(
+          req.project.authUserMembership,
+          req.membership,
+          req.body.isProjectAdmin,
+        );
+        return next();
+      }
+
       next();
     } catch (error) {
       return res.sendError(error);

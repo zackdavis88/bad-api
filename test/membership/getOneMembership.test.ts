@@ -4,7 +4,7 @@ import request from 'supertest';
 import { Project, User, Membership } from '../../src/models';
 const testHelper = new TestHelper();
 const serverUrl = testHelper.getServerUrl();
-let apiRoute = '/projects/:projectId/memberships';
+let apiRoute = '/projects/:projectId/memberships/:membershipId';
 
 describe('Membership GetOne', () => {
   describe(`GET ${apiRoute}`, () => {

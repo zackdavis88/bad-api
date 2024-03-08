@@ -19,8 +19,11 @@ const configureMembershipRoutes = (router: Router) => {
       MembershipController.getMembershipMiddleware,
     )
     .get(MembershipController.getOne)
-    .post(AuthController.authorizeMembershipAction(AuthorizationAction.UPDATE))
-    .delete();
+    .post(
+      AuthController.authorizeMembershipAction(AuthorizationAction.UPDATE),
+      MembershipController.update,
+    )
+    .delete(AuthController.authorizeMembershipAction(AuthorizationAction.DELETE));
 };
 
 export default configureMembershipRoutes;
