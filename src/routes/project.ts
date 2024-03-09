@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { AuthController, ProjectController } from 'src/controllers';
+import { AuthorizationAction } from 'src/server/types';
 
 const configureProjectRoutes = (router: Router) => {
   router
@@ -12,8 +13,14 @@ const configureProjectRoutes = (router: Router) => {
     .route('/projects/:projectId')
     .all(AuthController.authenticateToken, ProjectController.getProjectMiddleware)
     .get(ProjectController.getOne)
-    .post(AuthController.authorizeProjectUpdate, ProjectController.update)
-    .delete(AuthController.authorizeProjectRemove, ProjectController.remove);
+    .post(
+      AuthController.authorizeProjectAction(AuthorizationAction.UPDATE),
+      ProjectController.update,
+    )
+    .delete(
+      AuthController.authorizeProjectAction(AuthorizationAction.DELETE),
+      ProjectController.remove,
+    );
 };
 
 export default configureProjectRoutes;

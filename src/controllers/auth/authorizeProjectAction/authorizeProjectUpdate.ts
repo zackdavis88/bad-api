@@ -1,11 +1,9 @@
 import { Project } from 'src/models';
 import { AuthorizationError } from 'src/server/utils/errors';
 
-type AuthorizeProjectUpdate = (requestedProject: Project) => void;
+type AuthorizeProjectUpdate = (authUserMembership: Project['authUserMembership']) => void;
 
-const authorizeProjectUpdate: AuthorizeProjectUpdate = (requestedProject) => {
-  const authUserMembership = requestedProject.authUserMembership;
-
+const authorizeProjectUpdate: AuthorizeProjectUpdate = (authUserMembership) => {
   if (
     !authUserMembership ||
     (!authUserMembership.isProjectAdmin && !authUserMembership.isProjectManager)

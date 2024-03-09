@@ -21,12 +21,12 @@ class Membership extends Model<
   declare isProjectManager: CreationOptional<boolean>;
 
   // User associations - BelongsTo
-  declare getCreatedBy: BelongsToGetAssociationMixin<User | null>;
+  declare getCreatedBy: BelongsToGetAssociationMixin<User>;
   declare createdById: ForeignKey<User['id']>;
   declare createdBy: NonAttribute<User | null>;
   declare createdOn: CreationOptional<Date>;
 
-  declare getUpdatedBy: BelongsToGetAssociationMixin<User | null>;
+  declare getUpdatedBy: BelongsToGetAssociationMixin<User>;
   declare updatedById: ForeignKey<User['id'] | null>;
   declare updatedBy: NonAttribute<User | null>;
   declare updatedOn: CreationOptional<Date | null>;

@@ -23,17 +23,17 @@ class Project extends Model<InferAttributes<Project>, InferCreationAttributes<Pr
   declare description: CreationOptional<string | null>;
 
   // User associations - BelongsTo
-  declare getCreatedBy: BelongsToGetAssociationMixin<User | null>;
-  declare createdById: ForeignKey<User['id']>;
+  declare getCreatedBy: BelongsToGetAssociationMixin<User>;
+  declare createdById: ForeignKey<User['id'] | null>;
   declare createdBy: NonAttribute<User | null>;
   declare createdOn: CreationOptional<Date>;
 
-  declare getUpdatedBy: BelongsToGetAssociationMixin<User | null>;
+  declare getUpdatedBy: BelongsToGetAssociationMixin<User>;
   declare updatedById: ForeignKey<User['id'] | null>;
   declare updatedBy: NonAttribute<User | null>;
   declare updatedOn: CreationOptional<Date | null>;
 
-  declare getDeletedBy: BelongsToGetAssociationMixin<User | null>;
+  declare getDeletedBy: BelongsToGetAssociationMixin<User>;
   declare deletedById: ForeignKey<User['id'] | null>;
   declare deletedBy: NonAttribute<User | null>;
   declare deletedOn: CreationOptional<Date | null>;
@@ -44,7 +44,7 @@ class Project extends Model<InferAttributes<Project>, InferCreationAttributes<Pr
   declare countMemberships: HasManyCountAssociationsMixin;
 
   // Membership associations - HasOne
-  declare getMembership: HasOneGetAssociationMixin<Membership | null>;
+  declare getMembership: HasOneGetAssociationMixin<Membership>;
   declare authUserMembership: NonAttribute<Membership | null>;
 }
 

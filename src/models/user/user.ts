@@ -35,9 +35,9 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare countDeletedProjects: HasManyCountAssociationsMixin;
 
   // Project associations - HasOne
-  declare getCreatedProject: HasOneGetAssociationMixin<Project | null>;
-  declare getUpdatedProject: HasOneGetAssociationMixin<Project | null>;
-  declare getDeletedProject: HasOneGetAssociationMixin<Project | null>;
+  declare getCreatedProject: HasOneGetAssociationMixin<Project>;
+  declare getUpdatedProject: HasOneGetAssociationMixin<Project>;
+  declare getDeletedProject: HasOneGetAssociationMixin<Project>;
 
   // Membership associations - HasMany
   declare getCreatedMemberships: HasManyGetAssociationsMixin<Membership>;
@@ -48,9 +48,9 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare countMemberships: HasManyCountAssociationsMixin;
 
   // Membership associations - HasOne
-  declare getCreatedMembership: HasOneGetAssociationMixin<Membership | null>;
-  declare getUpdatedMembership: HasOneGetAssociationMixin<Membership | null>;
-  declare getMembership: HasOneGetAssociationMixin<Membership | null>;
+  declare getCreatedMembership: HasOneGetAssociationMixin<Membership>;
+  declare getUpdatedMembership: HasOneGetAssociationMixin<Membership>;
+  declare getMembership: HasOneGetAssociationMixin<Membership>;
 
   static generateHash(password: string): NonAttribute<string> {
     return bcrypt.hashSync(password, SALT_ROUNDS);

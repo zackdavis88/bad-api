@@ -4,6 +4,7 @@ import {
   configureAuthRoutes,
   configureUserRoutes,
   configureProjectRoutes,
+  configureMembershipRoutes,
 } from 'src/routes';
 
 const configureRoutes = (app: Express) => {
@@ -12,6 +13,7 @@ const configureRoutes = (app: Express) => {
   configureAuthRoutes(router);
   configureUserRoutes(router);
   configureProjectRoutes(router);
+  configureMembershipRoutes(router);
   configureCatchAllRoute(router); // This catch-all route must always be last.
 
   app.use(router);
