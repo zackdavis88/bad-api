@@ -23,7 +23,10 @@ const configureMembershipRoutes = (router: Router) => {
       AuthController.authorizeMembershipAction(AuthorizationAction.UPDATE),
       MembershipController.update,
     )
-    .delete(AuthController.authorizeMembershipAction(AuthorizationAction.DELETE));
+    .delete(
+      AuthController.authorizeMembershipAction(AuthorizationAction.DELETE),
+      MembershipController.remove,
+    );
 };
 
 export default configureMembershipRoutes;

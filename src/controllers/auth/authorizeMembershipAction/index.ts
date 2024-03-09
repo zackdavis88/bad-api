@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { AuthorizationAction } from 'src/server/types';
 import authorizeMembershipCreate from './authorizeMembershipCreate';
 import authorizeMembershipUpdate from './authorizeMembershipUpdate';
+import authorizeMembershipRemove from './authorizeMembershipRemove';
 
 const authorizeMembershipActionFlow = (action: AuthorizationAction) => {
   return (req: Request, res: Response, next: NextFunction) => {
@@ -18,6 +19,11 @@ const authorizeMembershipActionFlow = (action: AuthorizationAction) => {
           req.membership,
           req.body.isProjectAdmin,
         );
+        return next();
+      }
+
+      if (action === AuthorizationAction.DELETE) {
+        authorizeMembershipRemove(req.project.authUserMembership, req.membership);
         return next();
       }
 

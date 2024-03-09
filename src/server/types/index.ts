@@ -33,6 +33,8 @@ export interface MembershipData {
   isProjectManager: boolean;
   createdOn: Date;
   updatedOn?: Date | null;
+  deletedOn?: Date;
   createdBy: Pick<UserData, 'username' | 'displayName'> | null;
   updatedBy?: Pick<UserData, 'username' | 'displayName'> | null;
+  deletedBy?: Pick<UserData, 'username' | 'displayName'>;
 }
