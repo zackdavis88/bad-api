@@ -38,3 +38,24 @@ export interface MembershipData {
   updatedBy?: Pick<UserData, 'username' | 'displayName'> | null;
   deletedBy?: Pick<UserData, 'username' | 'displayName'>;
 }
+
+export enum StoryStatus {
+  ReadyForDevelopment = 'READY_FOR_DEVELOPMENT',
+  Development = 'DEVELOPMENT',
+  PullRequest = 'PULL_REQUEST',
+  ReadyForTest = 'READY_FOR_TEST',
+  Done = 'DONE',
+  Closed = 'CLOSED',
+}
+
+export interface StoryDetails {
+  id: string;
+  project: Pick<ProjectData, 'id' | 'name'>;
+  title: string;
+  details: string;
+  status: StoryStatus;
+  createdOn: Date;
+  updatedOn?: Date | null;
+  createdBy: Pick<UserData, 'username' | 'displayName'> | null;
+  updatedBy?: Pick<UserData, 'username' | 'displayName'> | null;
+}
