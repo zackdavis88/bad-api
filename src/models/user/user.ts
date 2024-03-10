@@ -14,6 +14,7 @@ import {
 } from 'sequelize';
 import Project from 'src/models/project/project';
 import Membership from 'src/models/membership/membership';
+import Story from 'src/models/story/story';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<string>;
@@ -51,6 +52,16 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare getCreatedMembership: HasOneGetAssociationMixin<Membership>;
   declare getUpdatedMembership: HasOneGetAssociationMixin<Membership>;
   declare getMembership: HasOneGetAssociationMixin<Membership>;
+
+  // Story associations - HasMany
+  declare getCreatedStories: HasManyGetAssociationsMixin<Story>;
+  declare countCreatedStories: HasManyCountAssociationsMixin;
+  declare getUpdatedStories: HasManyGetAssociationsMixin<Story>;
+  declare countUpdatedStories: HasManyCountAssociationsMixin;
+
+  // Story associations - HasOne
+  declare getCreatedStory: HasOneGetAssociationMixin<Story>;
+  declare getUpdatedStory: HasOneGetAssociationMixin<Story>;
 
   static generateHash(password: string): NonAttribute<string> {
     return bcrypt.hashSync(password, SALT_ROUNDS);

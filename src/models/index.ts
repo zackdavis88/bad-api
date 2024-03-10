@@ -2,6 +2,7 @@ import { Sequelize } from 'sequelize';
 import { User, initializeUser } from './user';
 import { Project, initializeProject } from './project';
 import { Membership, initializeMembership } from './membership';
+import { Story, initializeStory } from './story';
 
 const synchronizeTables = async (sequelize: Sequelize) => {
   try {
@@ -17,6 +18,7 @@ export const initializeModels = (sequelize: Sequelize) => {
   initializeUser(sequelize);
   initializeProject(sequelize);
   initializeMembership(sequelize);
+  initializeStory(sequelize);
 
   /*  Sequelize is weird. These associations need to be done outside of the model files
    *  and after model initialization because of our code structure.
@@ -61,7 +63,7 @@ export const initializeModels = (sequelize: Sequelize) => {
     as: 'user',
   });
 
-  // Membership -> User associations: memberships
+  // Membership -> Project associations: memberships
   Project.hasMany(Membership, {
     as: 'memberships',
     foreignKey: 'projectId',
@@ -79,6 +81,30 @@ export const initializeModels = (sequelize: Sequelize) => {
   Membership.belongsTo(Project, {
     as: 'project',
   });
+
+  // Story -> User associations: createdBy
+  User.hasMany(Story, { as: 'createdStories', foreignKey: 'createdById' });
+  User.hasOne(Story, { as: 'createdStory', foreignKey: 'createdById' });
+  Story.belongsTo(User, { as: 'createdBy' });
+
+  // Story -> User associations: updatedBy
+  User.hasMany(Story, { as: 'updatedStories', foreignKey: 'updatedById' });
+  User.hasOne(Story, { as: 'updatedStory', foreignKey: 'updatedById' });
+  Story.belongsTo(User, { as: 'updatedBy' });
+
+  // Story -> Project associations: stories
+  Project.hasMany(Story, {
+    as: 'stories',
+    foreignKey: 'projectId',
+    onDelete: 'CASCADE',
+  });
+  Project.hasOne(Story, {
+    foreignKey: 'projectId',
+    onDelete: 'CASCADE',
+  });
+  Story.belongsTo(Project, {
+    as: 'project',
+  });
 };
 
 export const initializeModelsAndSync = async (sequelize: Sequelize) => {
@@ -89,3 +115,4 @@ export const initializeModelsAndSync = async (sequelize: Sequelize) => {
 export { User } from './user';
 export { Project } from './project';
 export { Membership } from './membership';
+export { Story } from './story';
