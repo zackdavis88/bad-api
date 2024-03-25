@@ -1,4 +1,4 @@
-import { Project, User, Membership } from 'src/models';
+import { Project, User, Membership, Status } from 'src/models';
 import { NotFoundError } from 'src/server/utils/errors';
 import { Includeable } from 'sequelize';
 
@@ -8,6 +8,7 @@ const getOneProject: GetOneProject = async (projectId, authUser) => {
   let include: Includeable[] = [
     { model: User.scope('publicAttributes'), as: 'createdBy', required: false },
     { model: User.scope('publicAttributes'), as: 'updatedBy', required: false },
+    { model: Status, as: 'statuses', order: [['id', 'ASC']], required: false },
   ];
   if (authUser) {
     include = include.concat({
