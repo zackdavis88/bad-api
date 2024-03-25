@@ -35,6 +35,7 @@ export const initializeStatus = (sequelize: Sequelize) => {
       },
       name: {
         type: DataTypes.STRING,
+        primaryKey: true,
       },
     },
     {
