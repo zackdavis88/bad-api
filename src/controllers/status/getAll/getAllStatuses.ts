@@ -1,7 +1,7 @@
 import { Project } from 'src/models';
 import { StatusData } from 'src/server/types';
 
-type GetAllStatuses = (project: Project) => Promise<StatusData[]>;
+type GetAllStatuses = (project: Project) => Promise<Omit<StatusData, 'project'>[]>;
 
 const getAllStatuses: GetAllStatuses = async (project) => {
   if (!project.statuses) {

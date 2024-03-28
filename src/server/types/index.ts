@@ -40,6 +40,7 @@ export interface MembershipData {
 }
 
 export interface StatusData {
-  id: number;
+  id: string;
   name: string;
+  project: Pick<ProjectData, 'id' | 'name'>;
 }

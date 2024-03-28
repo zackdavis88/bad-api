@@ -12,7 +12,7 @@ import {
 import Project from 'src/models/project/project';
 
 class Status extends Model<InferAttributes<Status>, InferCreationAttributes<Status>> {
-  declare id: CreationOptional<number>;
+  declare id: CreationOptional<string>;
   declare name: string;
 
   // Project associations - BelongsTo
@@ -25,9 +25,8 @@ export const initializeStatus = (sequelize: Sequelize) => {
   Status.init(
     {
       id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
       },
       projectId: {
         type: DataTypes.UUID,

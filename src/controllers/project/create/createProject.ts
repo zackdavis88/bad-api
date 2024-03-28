@@ -3,7 +3,6 @@ import { ProjectData } from 'src/server/types';
 import { DEFAULT_PROJECT_STATUSES } from 'src/config/app';
 
 interface DefaultStatusData {
-  id: Status['id'];
   name: Status['name'];
   projectId: Status['projectId'];
 }
@@ -39,20 +38,16 @@ const createProject: CreateProject = async (
     // Since DEFAULT_PROJECT_STATUSES is ultimately user defined, we are only going to create
     // statuses that are of type string; anything else is ignored.
     await Status.bulkCreate(
-      DEFAULT_PROJECT_STATUSES.reduce<DefaultStatusData[]>(
-        (statuses, statusName, index) => {
-          if (typeof statusName === 'string') {
-            return statuses.concat({
-              id: index,
-              name: statusName,
-              projectId: newProject.id,
-            });
-          }
+      DEFAULT_PROJECT_STATUSES.reduce<DefaultStatusData[]>((statuses, statusName) => {
+        if (typeof statusName === 'string') {
+          return statuses.concat({
+            name: statusName,
+            projectId: newProject.id,
+          });
+        }
 
-          return statuses;
-        },
-        [],
-      ),
+        return statuses;
+      }, []),
     );
   }
 
