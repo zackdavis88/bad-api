@@ -11,6 +11,15 @@ const configureStatusRoutes = (router: Router) => {
       StatusController.create,
     )
     .get(StatusController.getAll);
+
+  router
+    .route('/projects/:projectId/statuses/:statusId')
+    .all(
+      AuthController.authenticateToken,
+      ProjectController.getProjectMiddleware,
+      StatusController.getStatusMiddleware,
+    )
+    .get(StatusController.getOne);
 };
 
 export default configureStatusRoutes;

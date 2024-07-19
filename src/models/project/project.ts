@@ -53,6 +53,9 @@ class Project extends Model<InferAttributes<Project>, InferCreationAttributes<Pr
   declare getStatuses: HasManyGetAssociationsMixin<Status>;
   declare countStatuses: HasManyCountAssociationsMixin;
   declare statuses: NonAttribute<Status[]>;
+
+  // Status associations - HasOne
+  declare getStatus: HasOneGetAssociationMixin<Status>;
 }
 
 export const initializeProject = (sequelize: Sequelize) => {

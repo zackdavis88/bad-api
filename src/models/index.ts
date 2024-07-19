@@ -88,6 +88,10 @@ export const initializeModels = (sequelize: Sequelize) => {
     foreignKey: 'projectId',
     onDelete: 'CASCADE',
   });
+  Project.hasOne(Status, {
+    foreignKey: 'projectId',
+    onDelete: 'CASCADE',
+  });
   Status.belongsTo(Project, {
     as: 'project',
   });
