@@ -1,7 +1,7 @@
 import { Project } from 'src/models';
 import { ValidationError } from 'src/server/utils/errors';
 
-type ValidateName = (project: Project, name: unknown) => void;
+type ValidateName = (project: Project, name: unknown) => Promise<void>;
 
 const validateName: ValidateName = async (project, name) => {
   const existingStatus = await project.getStatus({ where: { name } });

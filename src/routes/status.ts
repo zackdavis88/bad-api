@@ -19,7 +19,8 @@ const configureStatusRoutes = (router: Router) => {
       ProjectController.getProjectMiddleware,
       StatusController.getStatusMiddleware,
     )
-    .get(StatusController.getOne);
+    .get(StatusController.getOne)
+    .post(StatusController.update);
 };
 
 export default configureStatusRoutes;

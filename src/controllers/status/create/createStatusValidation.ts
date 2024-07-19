@@ -2,7 +2,7 @@ import { Project } from 'src/models';
 import { ValidationError } from 'src/server/utils/errors';
 import { validateName } from 'src/controllers/status/validationUtils';
 
-type CreateStatusValidation = (project: Project, name: unknown) => void;
+type CreateStatusValidation = (project: Project, name: unknown) => Promise<void>;
 
 const createStatusValidation: CreateStatusValidation = async (project, name) => {
   // Limit the amount of statuses a project can have to 100
