@@ -1,10 +1,10 @@
 import { Project } from 'src/models';
 import { ValidationError } from 'src/server/utils/errors';
 
-type ValidateName = (existingStatuses: Project['statuses'], name: unknown) => void;
+type ValidateName = (project: Project, name: unknown) => void;
 
-const validateName: ValidateName = (existingStatuses, name) => {
-  const existingStatus = existingStatuses.find((status) => status.name === name);
+const validateName: ValidateName = async (project, name) => {
+  const existingStatus = await project.getStatus({ where: { name } });
   if (existingStatus) {
     throw new ValidationError('status already exists');
   }

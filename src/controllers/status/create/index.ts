@@ -13,7 +13,7 @@ const createStatusFlow = async (
   try {
     const project = req.project;
     const { name } = req.body;
-    createStatusValidation(project.statuses, name);
+    await createStatusValidation(project, name);
     const statusData = await createStatus(project, name as string);
     return res.success('status has been successfully created', {
       status: statusData,
