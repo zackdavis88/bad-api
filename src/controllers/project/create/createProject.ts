@@ -34,20 +34,27 @@ const createProject: CreateProject = async (
   });
 
   // Create default statuses if requested
-  if (createDefaultStatuses && Array.isArray(DEFAULT_PROJECT_STATUSES)) {
+  if (
+    createDefaultStatuses &&
+    Array.isArray(DEFAULT_PROJECT_STATUSES) &&
+    DEFAULT_PROJECT_STATUSES.length
+  ) {
     // Since DEFAULT_PROJECT_STATUSES is ultimately user defined, we are only going to create
     // statuses that are of type string; anything else is ignored.
     await Status.bulkCreate(
-      DEFAULT_PROJECT_STATUSES.reduce<DefaultStatusData[]>((statuses, statusName) => {
-        if (typeof statusName === 'string') {
-          return statuses.concat({
-            name: statusName,
-            projectId: newProject.id,
-          });
-        }
+      [...new Set(DEFAULT_PROJECT_STATUSES)].reduce<DefaultStatusData[]>(
+        (statuses, statusName) => {
+          if (typeof statusName === 'string') {
+            return statuses.concat({
+              name: statusName,
+              projectId: newProject.id,
+            });
+          }
 
-        return statuses;
-      }, []),
+          return statuses;
+        },
+        [],
+      ),
     );
   }
 
