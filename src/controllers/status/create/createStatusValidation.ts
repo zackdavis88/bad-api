@@ -7,7 +7,7 @@ type CreateStatusValidation = (project: Project, name: unknown) => Promise<void>
 const createStatusValidation: CreateStatusValidation = async (project, name) => {
   // Limit the amount of statuses a project can have to 100
   const statusCount = await project.countStatuses();
-  if (statusCount > 100) {
+  if (statusCount >= 100) {
     throw new ValidationError('project has exceeded status limit of 100');
   }
 

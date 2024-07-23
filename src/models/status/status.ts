@@ -27,14 +27,13 @@ export const initializeStatus = (sequelize: Sequelize) => {
       id: {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
       },
       projectId: {
         type: DataTypes.UUID,
-        primaryKey: true,
       },
       name: {
         type: DataTypes.STRING,
-        primaryKey: true,
       },
     },
     {

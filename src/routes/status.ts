@@ -20,8 +20,14 @@ const configureStatusRoutes = (router: Router) => {
       StatusController.getStatusMiddleware,
     )
     .get(StatusController.getOne)
-    .post(StatusController.update)
-    .delete(StatusController.remove);
+    .post(
+      AuthController.authorizeStatusAction(AuthorizationAction.UPDATE),
+      StatusController.update,
+    )
+    .delete(
+      AuthController.authorizeStatusAction(AuthorizationAction.DELETE),
+      StatusController.remove,
+    );
 };
 
 export default configureStatusRoutes;
