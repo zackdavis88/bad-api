@@ -13,9 +13,18 @@ const createProjectFlow = async (
 ) => {
   const { name, description } = req.body;
   const user = req.user;
+  const createDefaultStatuses =
+    typeof req.query.createDefaultStatuses === 'string' &&
+    req.query.createDefaultStatuses.toLocaleLowerCase() === 'true';
+
   try {
     createProjectValidation(name, description);
-    const projectData = await createProject(user, name as string, description as string);
+    const projectData = await createProject(
+      user,
+      name as string,
+      description as string,
+      createDefaultStatuses,
+    );
     return res.success('project has been successfully created', {
       project: projectData,
     });

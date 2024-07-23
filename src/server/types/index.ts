@@ -38,3 +38,9 @@ export interface MembershipData {
   updatedBy?: Pick<UserData, 'username' | 'displayName'> | null;
   deletedBy?: Pick<UserData, 'username' | 'displayName'>;
 }
+
+export interface StatusData {
+  id: string;
+  name: string;
+  project: Pick<ProjectData, 'id' | 'name'>;
+}

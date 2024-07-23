@@ -15,6 +15,7 @@ import {
 } from 'sequelize';
 import User from 'src/models/user/user';
 import Membership from 'src/models/membership/membership';
+import Status from 'src/models/status/status';
 
 class Project extends Model<InferAttributes<Project>, InferCreationAttributes<Project>> {
   declare id: CreationOptional<string>;
@@ -46,6 +47,15 @@ class Project extends Model<InferAttributes<Project>, InferCreationAttributes<Pr
   // Membership associations - HasOne
   declare getMembership: HasOneGetAssociationMixin<Membership>;
   declare authUserMembership: NonAttribute<Membership | null>;
+
+  // Status associations - HasMany
+  declare createStatus: HasManyCreateAssociationMixin<Status>;
+  declare getStatuses: HasManyGetAssociationsMixin<Status>;
+  declare countStatuses: HasManyCountAssociationsMixin;
+  declare statuses: NonAttribute<Status[]>;
+
+  // Status associations - HasOne
+  declare getStatus: HasOneGetAssociationMixin<Status>;
 }
 
 export const initializeProject = (sequelize: Sequelize) => {
