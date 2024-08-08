@@ -9,6 +9,7 @@ const getOneProject: GetOneProject = async (projectId, authUser) => {
     { model: User.scope('publicAttributes'), as: 'createdBy', required: false },
     { model: User.scope('publicAttributes'), as: 'updatedBy', required: false },
   ];
+
   if (authUser) {
     include = include.concat({
       model: Membership,

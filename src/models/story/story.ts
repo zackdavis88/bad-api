@@ -11,13 +11,11 @@ import {
 } from 'sequelize';
 import User from 'src/models/user/user';
 import Project from 'src/models/project/project';
-import { StoryStatus } from 'src/server/types';
 
 class Story extends Model<InferAttributes<Story>, InferCreationAttributes<Story>> {
   declare id: CreationOptional<string>;
   declare title: string;
   declare details: CreationOptional<string | null>;
-  declare status: CreationOptional<StoryStatus>;
 
   // User associations - BelongsTo
   declare getCreatedBy: BelongsToGetAssociationMixin<User>;
@@ -49,10 +47,6 @@ export const initializeStory = (sequelize: Sequelize) => {
       },
       details: {
         type: DataTypes.TEXT,
-      },
-      status: {
-        type: DataTypes.STRING,
-        defaultValue: StoryStatus.ReadyForDevelopment,
       },
       createdOn: {
         type: DataTypes.DATE,

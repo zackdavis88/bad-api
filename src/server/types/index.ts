@@ -39,13 +39,10 @@ export interface MembershipData {
   deletedBy?: Pick<UserData, 'username' | 'displayName'>;
 }
 
-export enum StoryStatus {
-  ReadyForDevelopment = 'READY_FOR_DEVELOPMENT',
-  Development = 'DEVELOPMENT',
-  PullRequest = 'PULL_REQUEST',
-  ReadyForTest = 'READY_FOR_TEST',
-  Done = 'DONE',
-  Closed = 'CLOSED',
+export interface StatusData {
+  id: string;
+  name: string;
+  project: Pick<ProjectData, 'id' | 'name'>;
 }
 
 export interface StoryDetails {
@@ -53,7 +50,7 @@ export interface StoryDetails {
   project: Pick<ProjectData, 'id' | 'name'>;
   title: string;
   details: string;
-  status: StoryStatus;
+  status: Omit<StatusData, 'project'>;
   createdOn: Date;
   updatedOn?: Date | null;
   createdBy: Pick<UserData, 'username' | 'displayName'> | null;
