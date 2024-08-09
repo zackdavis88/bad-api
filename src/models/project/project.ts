@@ -15,8 +15,8 @@ import {
 } from 'sequelize';
 import User from 'src/models/user/user';
 import Membership from 'src/models/membership/membership';
-import Story from 'src/models/story/story';
 import Status from 'src/models/status/status';
+import Story from 'src/models/story/story';
 
 class Project extends Model<InferAttributes<Project>, InferCreationAttributes<Project>> {
   declare id: CreationOptional<string>;

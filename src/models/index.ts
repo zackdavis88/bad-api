@@ -2,8 +2,8 @@ import { Sequelize } from 'sequelize';
 import { User, initializeUser } from './user';
 import { Project, initializeProject } from './project';
 import { Membership, initializeMembership } from './membership';
-import { Story, initializeStory } from './story';
 import { Status, initializeStatus } from './status';
+import { Story, initializeStory } from './story';
 
 const synchronizeTables = async (sequelize: Sequelize) => {
   try {
@@ -19,8 +19,8 @@ export const initializeModels = (sequelize: Sequelize) => {
   initializeUser(sequelize);
   initializeProject(sequelize);
   initializeMembership(sequelize);
-  initializeStory(sequelize);
   initializeStatus(sequelize);
+  initializeStory(sequelize);
 
   /*  Sequelize is weird. These associations need to be done outside of the model files
    *  and after model initialization because of our code structure.
@@ -98,6 +98,17 @@ export const initializeModels = (sequelize: Sequelize) => {
     as: 'project',
   });
 
+  // Story -> Status associations: status
+  Status.hasMany(Story, {
+    foreignKey: 'statusId',
+  });
+  Status.hasOne(Story, {
+    foreignKey: 'statusId',
+  });
+  Story.belongsTo(Status, {
+    as: 'status',
+  });
+
   // Story -> User associations: createdBy
   User.hasMany(Story, { as: 'createdStories', foreignKey: 'createdById' });
   User.hasOne(Story, { as: 'createdStory', foreignKey: 'createdById' });
@@ -131,5 +142,5 @@ export const initializeModelsAndSync = async (sequelize: Sequelize) => {
 export { User } from './user';
 export { Project } from './project';
 export { Membership } from './membership';
-export { Story } from './story';
 export { Status } from './status';
+export { Story } from './story';

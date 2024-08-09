@@ -11,6 +11,7 @@ import {
 } from 'sequelize';
 import User from 'src/models/user/user';
 import Project from 'src/models/project/project';
+import Status from 'src/models/status/status';
 
 class Story extends Model<InferAttributes<Story>, InferCreationAttributes<Story>> {
   declare id: CreationOptional<string>;
@@ -32,6 +33,11 @@ class Story extends Model<InferAttributes<Story>, InferCreationAttributes<Story>
   declare getProject: BelongsToGetAssociationMixin<Project>;
   declare projectId: ForeignKey<Project['id']>;
   declare project: NonAttribute<Project>;
+
+  // Status associations - BelongsTo
+  declare getStatus: BelongsToGetAssociationMixin<Status>;
+  declare statusId: ForeignKey<Status['id']>;
+  declare status: NonAttribute<Status>;
 }
 
 export const initializeStory = (sequelize: Sequelize) => {
