@@ -45,12 +45,12 @@ export interface StatusData {
   project: Pick<ProjectData, 'id' | 'name'>;
 }
 
-export interface StoryDetails {
+export interface StoryData {
   id: string;
   project: Pick<ProjectData, 'id' | 'name'>;
   title: string;
-  details: string;
-  status: Omit<StatusData, 'project'>;
+  details: string | null;
+  status?: Omit<StatusData, 'project'> | null;
   createdOn: Date;
   updatedOn?: Date | null;
   createdBy: Pick<UserData, 'username' | 'displayName'> | null;
