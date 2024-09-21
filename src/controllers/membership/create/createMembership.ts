@@ -5,7 +5,11 @@ type CreateMembership = (
   project: Project,
   authenticatedUser: User,
   membershipUser: User,
-  roles: { isProjectAdmin: unknown; isProjectManager: unknown },
+  roles: {
+    isProjectAdmin: unknown;
+    isProjectManager: unknown;
+    isProjectDeveloper: unknown;
+  },
 ) => Promise<MembershipData>;
 
 const createMembership: CreateMembership = async (
@@ -18,6 +22,7 @@ const createMembership: CreateMembership = async (
     userId: membershipUser.id,
     isProjectAdmin: !!roles.isProjectAdmin,
     isProjectManager: !!roles.isProjectManager,
+    isProjectDeveloper: !!roles.isProjectDeveloper,
     createdById: authenticatedUser.id,
   });
 
@@ -33,6 +38,7 @@ const createMembership: CreateMembership = async (
     },
     isProjectAdmin: newMembership.isProjectAdmin,
     isProjectManager: newMembership.isProjectManager,
+    isProjectDeveloper: newMembership.isProjectDeveloper,
     createdOn: newMembership.createdOn,
     createdBy: {
       username: authenticatedUser.username,

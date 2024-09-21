@@ -22,6 +22,7 @@ const removeMembership: RemoveMembership = async (authUser, project, membership)
     },
     isProjectAdmin: membership.isProjectAdmin,
     isProjectManager: membership.isProjectManager,
+    isProjectDeveloper: membership.isProjectDeveloper,
     createdOn: membership.createdOn,
     createdBy:
       membership.createdById && membership.createdBy ?

@@ -12,6 +12,7 @@ describe('Membership Update', () => {
     let projectMember2: User;
     let projectMember3: User;
     let projectMember4: User;
+    let projectMember5: User;
     let nonProjectMember: User;
 
     let testProject: Project;
@@ -21,10 +22,12 @@ describe('Membership Update', () => {
     let testAdminMembership2: Membership;
     let testManagerMembership: Membership;
     let testViewerMembership: Membership;
+    let testDeveloperMembership: Membership;
 
     let adminAuthToken1: string;
     let adminAuthToken2: string;
     let managerAuthToken: string;
+    let developerAuthToken: string;
     let viewerAuthToken: string;
     let nonMemberAuthToken: string;
 
@@ -33,6 +36,7 @@ describe('Membership Update', () => {
       projectMember2 = await testHelper.createTestUser(); // admin
       projectMember3 = await testHelper.createTestUser(); // manager
       projectMember4 = await testHelper.createTestUser(); // viewer
+      projectMember5 = await testHelper.createTestUser(); // developer
       nonProjectMember = await testHelper.createTestUser(); // non-member
 
       inactiveProject = await testHelper.createTestProject(projectMember1);
@@ -65,9 +69,16 @@ describe('Membership Update', () => {
         updatedOn: new Date(),
       });
 
+      testDeveloperMembership = await testProject.createMembership({
+        userId: projectMember5.id,
+        createdBy: projectMember3.id,
+        isProjectDeveloper: true,
+      });
+
       adminAuthToken1 = testHelper.generateToken(projectMember1);
       adminAuthToken2 = testHelper.generateToken(projectMember2);
       managerAuthToken = testHelper.generateToken(projectMember3);
+      developerAuthToken = testHelper.generateToken(projectMember5);
       viewerAuthToken = testHelper.generateToken(projectMember4);
       nonMemberAuthToken = testHelper.generateToken(nonProjectMember);
     });
@@ -235,6 +246,22 @@ describe('Membership Update', () => {
         );
     });
 
+    it('should reject requests when updating memberships as a developer', (done) => {
+      apiRoute = `/projects/${testProject.id}/memberships/${testDeveloperMembership.id}`;
+      request(serverUrl)
+        .post(apiRoute)
+        .set('x-auth-token', developerAuthToken)
+        .send({ isProjectDeveloper: true })
+        .expect(
+          401,
+          {
+            error: 'you do not have permission to update memberships for this project',
+            errorType: ErrorTypes.AUTHORIZATION,
+          },
+          done,
+        );
+    });
+
     it('should reject requests when updating memberships as a viewer', (done) => {
       apiRoute = `/projects/${testProject.id}/memberships/${testAdminMembership2.id}`;
       request(serverUrl)
@@ -324,6 +351,7 @@ describe('Membership Update', () => {
             },
             isProjectAdmin: true,
             isProjectManager: false,
+            isProjectDeveloper: false,
             createdOn: testViewerMembership.createdOn.toISOString(),
             createdBy: {
               username: projectMember3.username,
@@ -378,6 +406,7 @@ describe('Membership Update', () => {
             },
             isProjectAdmin: false,
             isProjectManager: true,
+            isProjectDeveloper: false,
             createdOn: testAdminMembership2.createdOn.toISOString(),
             createdBy: {
               username: projectMember1.username,
@@ -433,6 +462,7 @@ describe('Membership Update', () => {
             },
             isProjectAdmin: false,
             isProjectManager: false,
+            isProjectDeveloper: false,
             createdOn: testManagerMembership.createdOn.toISOString(),
             createdBy: {
               username: projectMember2.username,
@@ -488,6 +518,7 @@ describe('Membership Update', () => {
             },
             isProjectAdmin: false,
             isProjectManager: true,
+            isProjectDeveloper: false,
             createdOn: testViewerMembership.createdOn.toISOString(),
             createdBy: {
               username: projectMember3.username,
@@ -543,6 +574,7 @@ describe('Membership Update', () => {
             },
             isProjectAdmin: false,
             isProjectManager: false,
+            isProjectDeveloper: false,
             createdOn: testManagerMembership.createdOn.toISOString(),
             createdBy: {
               username: projectMember2.username,

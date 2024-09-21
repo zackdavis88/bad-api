@@ -5,7 +5,11 @@ import { NotFoundError, ValidationError } from 'src/server/utils/errors';
 type CreateMembershipValidation = (
   project: Project,
   username: unknown,
-  roles: { isProjectAdmin: unknown; isProjectManager: unknown },
+  roles: {
+    isProjectAdmin: unknown;
+    isProjectManager: unknown;
+    isProjectDeveloper: unknown;
+  },
 ) => Promise<User>;
 
 const createMembershipValidation: CreateMembershipValidation = async (
@@ -15,6 +19,7 @@ const createMembershipValidation: CreateMembershipValidation = async (
 ) => {
   validateRole(roles.isProjectAdmin, 'isProjectAdmin');
   validateRole(roles.isProjectManager, 'isProjectManager');
+  validateRole(roles.isProjectDeveloper, 'isProjectDeveloper');
 
   if (username === undefined || username === null) {
     throw new ValidationError('username is missing from input');

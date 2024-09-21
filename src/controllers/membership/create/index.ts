@@ -6,6 +6,7 @@ interface CreateMembershipRequestBody {
   username: unknown;
   isProjectAdmin: unknown;
   isProjectManager: unknown;
+  isProjectDeveloper: unknown;
 }
 
 const createMembershipFlow = async (

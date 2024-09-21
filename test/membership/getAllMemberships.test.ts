@@ -165,6 +165,7 @@ describe('Membership GetAll', () => {
                 },
                 isProjectAdmin: false,
                 isProjectManager: true,
+                isProjectDeveloper: false,
                 createdOn: expectedMembership1.createdOn.toISOString(),
                 updatedOn: null,
                 createdBy: {
@@ -181,6 +182,7 @@ describe('Membership GetAll', () => {
                 },
                 isProjectAdmin: false,
                 isProjectManager: true,
+                isProjectDeveloper: false,
                 createdOn: expectedMembership2.createdOn.toISOString(),
                 updatedOn: null,
                 createdBy: {
@@ -197,6 +199,7 @@ describe('Membership GetAll', () => {
                 },
                 isProjectAdmin: false,
                 isProjectManager: false,
+                isProjectDeveloper: false,
                 createdOn: expectedMembership3.createdOn.toISOString(),
                 updatedOn: expectedMembership3.updatedOn?.toISOString(),
                 createdBy: {

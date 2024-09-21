@@ -5,6 +5,7 @@ import updateMembership from './updateMembership';
 interface UpdateMembershipRequestBody {
   isProjectAdmin: unknown;
   isProjectManager: unknown;
+  isProjectDeveloper: unknown;
 }
 
 const updateMembershipFlow = async (

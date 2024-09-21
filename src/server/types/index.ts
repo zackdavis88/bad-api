@@ -31,6 +31,7 @@ export interface MembershipData {
   project: Pick<ProjectData, 'id' | 'name'>;
   isProjectAdmin: boolean;
   isProjectManager: boolean;
+  isProjectDeveloper: boolean;
   createdOn: Date;
   updatedOn?: Date | null;
   deletedOn?: Date;

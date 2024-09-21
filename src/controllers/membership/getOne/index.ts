@@ -34,6 +34,7 @@ const getOneMembershipFlow = async (req: Request, res: Response) => {
     },
     isProjectAdmin: membership.isProjectAdmin,
     isProjectManager: membership.isProjectManager,
+    isProjectDeveloper: membership.isProjectDeveloper,
     createdOn: membership.createdOn,
     createdBy:
       membership.createdById && membership.createdBy ?

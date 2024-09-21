@@ -139,6 +139,7 @@ describe('Membership GetOne', () => {
             },
             isProjectAdmin: false,
             isProjectManager: false,
+            isProjectDeveloper: false,
             createdOn: testMembership.createdOn.toISOString(),
             updatedOn: testMembership.updatedOn?.toISOString(),
             createdBy: {

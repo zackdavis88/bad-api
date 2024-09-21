@@ -10,23 +10,27 @@ describe('Membership Create', () => {
   describe(`POST ${apiRoute}`, () => {
     let adminUser: User;
     let managerUser: User;
+    let developerUser: User;
     let nonMemberUser: User;
     let testProject: Project;
     let inactiveProject: Project;
     let adminAuthToken: string;
     let managerAuthToken: string;
+    let developerAuthToken: string;
     let viewerAuthToken: string;
     let nonMemberAuthToken: string;
     let payload: {
       username: unknown;
       isProjectAdmin?: unknown;
       isProjectManager?: unknown;
+      isProjectDeveloper?: unknown;
     };
 
     beforeAll(async () => {
       adminUser = await testHelper.createTestUser();
       nonMemberUser = await testHelper.createTestUser();
       managerUser = await testHelper.createTestUser();
+      developerUser = await testHelper.createTestUser();
       const viewerUser = await testHelper.createTestUser();
 
       inactiveProject = await testHelper.createTestProject(adminUser);
@@ -44,6 +48,7 @@ describe('Membership Create', () => {
 
       adminAuthToken = testHelper.generateToken(adminUser);
       managerAuthToken = testHelper.generateToken(managerUser);
+      developerAuthToken = testHelper.generateToken(developerUser);
       viewerAuthToken = testHelper.generateToken(viewerUser);
       nonMemberAuthToken = testHelper.generateToken(nonMemberUser);
     });
@@ -150,6 +155,26 @@ describe('Membership Create', () => {
         );
     });
 
+    it('should reject requests when developers try to create an admin membership', (done) => {
+      payload = {
+        username: nonMemberUser.username,
+        isProjectAdmin: true,
+      };
+      request(serverUrl)
+        .post(apiRoute)
+        .set('x-auth-token', developerAuthToken)
+        .send(payload)
+        .expect(
+          401,
+          {
+            error:
+              'you do not have permission to create admin memberships for this project',
+            errorType: ErrorTypes.AUTHORIZATION,
+          },
+          done,
+        );
+    });
+
     it('should reject requests when viewers try to create an admin membership', (done) => {
       payload = {
         username: nonMemberUser.username,
@@ -189,6 +214,25 @@ describe('Membership Create', () => {
         );
     });
 
+    it('should reject requests when developers try to create a manager membership', (done) => {
+      payload = {
+        username: nonMemberUser.username,
+        isProjectManager: true,
+      };
+      request(serverUrl)
+        .post(apiRoute)
+        .set('x-auth-token', developerAuthToken)
+        .send(payload)
+        .expect(
+          401,
+          {
+            error: 'you do not have permission to create memberships for this project',
+            errorType: ErrorTypes.AUTHORIZATION,
+          },
+          done,
+        );
+    });
+
     it('should reject requests when viewers try to create a manager membership', (done) => {
       payload = {
         username: nonMemberUser.username,
@@ -197,6 +241,99 @@ describe('Membership Create', () => {
       request(serverUrl)
         .post(apiRoute)
         .set('x-auth-token', viewerAuthToken)
+        .send(payload)
+        .expect(
+          401,
+          {
+            error: 'you do not have permission to create memberships for this project',
+            errorType: ErrorTypes.AUTHORIZATION,
+          },
+          done,
+        );
+    });
+
+    it('should reject requests when non-members try to create a developer membership', (done) => {
+      payload = {
+        username: nonMemberUser.username,
+        isProjectDeveloper: true,
+      };
+      request(serverUrl)
+        .post(apiRoute)
+        .set('x-auth-token', nonMemberAuthToken)
+        .send(payload)
+        .expect(
+          401,
+          {
+            error: 'you do not have permission to create memberships for this project',
+            errorType: ErrorTypes.AUTHORIZATION,
+          },
+          done,
+        );
+    });
+
+    it('should reject requests when developers try to create a developer membership', (done) => {
+      payload = {
+        username: nonMemberUser.username,
+        isProjectDeveloper: true,
+      };
+      request(serverUrl)
+        .post(apiRoute)
+        .set('x-auth-token', developerAuthToken)
+        .send(payload)
+        .expect(
+          401,
+          {
+            error: 'you do not have permission to create memberships for this project',
+            errorType: ErrorTypes.AUTHORIZATION,
+          },
+          done,
+        );
+    });
+
+    it('should reject requests when viewers try to create a developer membership', (done) => {
+      payload = {
+        username: nonMemberUser.username,
+        isProjectDeveloper: true,
+      };
+      request(serverUrl)
+        .post(apiRoute)
+        .set('x-auth-token', viewerAuthToken)
+        .send(payload)
+        .expect(
+          401,
+          {
+            error: 'you do not have permission to create memberships for this project',
+            errorType: ErrorTypes.AUTHORIZATION,
+          },
+          done,
+        );
+    });
+
+    it('should reject requests when non-members try to create a viewer membership', (done) => {
+      payload = {
+        username: nonMemberUser.username,
+      };
+      request(serverUrl)
+        .post(apiRoute)
+        .set('x-auth-token', nonMemberAuthToken)
+        .send(payload)
+        .expect(
+          401,
+          {
+            error: 'you do not have permission to create memberships for this project',
+            errorType: ErrorTypes.AUTHORIZATION,
+          },
+          done,
+        );
+    });
+
+    it('should reject requests when developers try to create a viewer membership', (done) => {
+      payload = {
+        username: nonMemberUser.username,
+      };
+      request(serverUrl)
+        .post(apiRoute)
+        .set('x-auth-token', developerAuthToken)
         .send(payload)
         .expect(
           401,
@@ -240,6 +377,25 @@ describe('Membership Create', () => {
           400,
           {
             error: 'isProjectManager must be a boolean',
+            errorType: ErrorTypes.VALIDATION,
+          },
+          done,
+        );
+    });
+
+    it('should reject requests when isProjectDeveloper is present and not a boolean', (done) => {
+      payload = {
+        username: nonMemberUser.username,
+        isProjectDeveloper: 'yes, please',
+      };
+      request(serverUrl)
+        .post(apiRoute)
+        .set('x-auth-token', adminAuthToken)
+        .send(payload)
+        .expect(
+          400,
+          {
+            error: 'isProjectDeveloper must be a boolean',
             errorType: ErrorTypes.VALIDATION,
           },
           done,
@@ -354,6 +510,7 @@ describe('Membership Create', () => {
             },
             isProjectAdmin: true,
             isProjectManager: false,
+            isProjectDeveloper: false,
             createdOn: createdMembership.createdOn.toISOString(),
             createdBy: {
               username: adminUser.username,
@@ -400,6 +557,54 @@ describe('Membership Create', () => {
             },
             isProjectAdmin: false,
             isProjectManager: true,
+            isProjectDeveloper: false,
+            createdOn: createdMembership.createdOn.toISOString(),
+            createdBy: {
+              username: adminUser.username,
+              displayName: adminUser.displayName,
+            },
+          });
+          done();
+        });
+    });
+
+    it('should allow admin members to create developer members', (done) => {
+      payload = {
+        username: nonMemberUser.username,
+        isProjectDeveloper: true,
+      };
+      request(serverUrl)
+        .post(apiRoute)
+        .set('x-auth-token', adminAuthToken)
+        .send(payload)
+        .expect(200)
+        .end(async (err, res) => {
+          if (err) {
+            return done(err);
+          }
+
+          const createdMembership = await testProject.getMembership({
+            where: { userId: nonMemberUser.id },
+          });
+          if (createdMembership === null) {
+            return done('created membership was not found in database');
+          }
+
+          const { message, membership } = res.body;
+          expect(message).toBe('membership has been successfully created');
+          expect(membership).toEqual({
+            id: createdMembership.id,
+            user: {
+              username: nonMemberUser.username,
+              displayName: nonMemberUser.displayName,
+            },
+            project: {
+              id: testProject.id,
+              name: testProject.name,
+            },
+            isProjectAdmin: false,
+            isProjectManager: false,
+            isProjectDeveloper: true,
             createdOn: createdMembership.createdOn.toISOString(),
             createdBy: {
               username: adminUser.username,
@@ -445,6 +650,7 @@ describe('Membership Create', () => {
             },
             isProjectAdmin: false,
             isProjectManager: false,
+            isProjectDeveloper: false,
             createdOn: createdMembership.createdOn.toISOString(),
             createdBy: {
               username: adminUser.username,
@@ -491,6 +697,7 @@ describe('Membership Create', () => {
             },
             isProjectAdmin: false,
             isProjectManager: true,
+            isProjectDeveloper: false,
             createdOn: createdMembership.createdOn.toISOString(),
             createdBy: {
               username: managerUser.username,
@@ -536,6 +743,54 @@ describe('Membership Create', () => {
             },
             isProjectAdmin: false,
             isProjectManager: false,
+            isProjectDeveloper: false,
+            createdOn: createdMembership.createdOn.toISOString(),
+            createdBy: {
+              username: managerUser.username,
+              displayName: managerUser.displayName,
+            },
+          });
+          done();
+        });
+    });
+
+    it('should allow manager members to create developer members', (done) => {
+      payload = {
+        username: nonMemberUser.username,
+        isProjectDeveloper: true,
+      };
+      request(serverUrl)
+        .post(apiRoute)
+        .set('x-auth-token', managerAuthToken)
+        .send(payload)
+        .expect(200)
+        .end(async (err, res) => {
+          if (err) {
+            return done(err);
+          }
+
+          const createdMembership = await testProject.getMembership({
+            where: { userId: nonMemberUser.id },
+          });
+          if (createdMembership === null) {
+            return done('created membership was not found in database');
+          }
+
+          const { message, membership } = res.body;
+          expect(message).toBe('membership has been successfully created');
+          expect(membership).toEqual({
+            id: createdMembership.id,
+            user: {
+              username: nonMemberUser.username,
+              displayName: nonMemberUser.displayName,
+            },
+            project: {
+              id: testProject.id,
+              name: testProject.name,
+            },
+            isProjectAdmin: false,
+            isProjectManager: false,
+            isProjectDeveloper: true,
             createdOn: createdMembership.createdOn.toISOString(),
             createdBy: {
               username: managerUser.username,
