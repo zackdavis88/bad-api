@@ -1,4 +1,4 @@
-// import { default as getAll } from './getAll';
+import { default as getAll } from './getAll';
 import { default as create } from './create';
 // import { default as getOne, getStoryMiddleware } from './getOne';
 // import { default as update } from './update';
@@ -6,7 +6,7 @@ import { default as create } from './create';
 
 export default {
   create,
-  // getAll,
+  getAll,
   // getOne,
   // update,
   // remove,

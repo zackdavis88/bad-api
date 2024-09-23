@@ -10,13 +10,16 @@ const configureStoryRoutes = (router: Router) => {
       AuthController.authorizeStoryAction(AuthorizationAction.CREATE),
       StoryController.create,
     )
-    .get();
+    .get(
+      AuthController.authorizeStoryAction(AuthorizationAction.READ),
+      StoryController.getAll,
+    );
 
   router
     .route('/projects/:projectId/stories/:storyId')
     .all(AuthController.authenticateToken, ProjectController.getProjectMiddleware)
     .post(AuthController.authorizeStoryAction(AuthorizationAction.UPDATE))
-    .get()
+    .get(AuthController.authorizeStoryAction(AuthorizationAction.READ))
     .delete(AuthController.authorizeStoryAction(AuthorizationAction.DELETE));
 };
 

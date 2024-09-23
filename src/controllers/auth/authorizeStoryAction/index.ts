@@ -3,12 +3,18 @@ import { AuthorizationAction } from 'src/server/types';
 import authorizeStoryCreate from './authorizeStoryCreate';
 import authorizeStoryUpdate from './authorizeStoryUpdate';
 import authorizeStoryRemove from './authorizeStoryRemove';
+import authorizeStoryRead from './authorizeStoryRead';
 
 const authorizeStoryActionFlow = (action: AuthorizationAction) => {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
       if (action === AuthorizationAction.CREATE) {
         authorizeStoryCreate(req.project.authUserMembership);
+        return next();
+      }
+
+      if (action === AuthorizationAction.READ) {
+        authorizeStoryRead(req.project.authUserMembership);
         return next();
       }
 
