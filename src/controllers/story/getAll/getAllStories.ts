@@ -51,7 +51,7 @@ const getAllStories: GetAllStories = async (project, paginationData) => {
         }
       : null,
     status:
-      story.status ?
+      story.statusId && story.status ?
         {
           id: story.status.id,
           name: story.status.name,
