@@ -5,7 +5,8 @@ import createStory from './createStory';
 interface CreateStoryRequestBody {
   title: unknown;
   details: unknown;
-  statusId: unknown;
+  status: unknown;
+  ownedBy: unknown;
 }
 
 const createStoryFlow = async (
@@ -15,14 +16,10 @@ const createStoryFlow = async (
   try {
     const project = req.project;
     const user = req.user;
-    const { title, details, statusId } = req.body;
+    const { title, details, status, ownedBy } = req.body;
 
-    const validatedStatus = await createStoryValidation(
-      project,
-      title,
-      details,
-      statusId,
-    );
+    const { status: validatedStatus, ownedBy: validatedOwnedBy } =
+      await createStoryValidation(project, title, details, status, ownedBy);
 
     const storyData = await createStory(
       project,
@@ -30,6 +27,7 @@ const createStoryFlow = async (
       title as string,
       details as string,
       validatedStatus,
+      validatedOwnedBy,
     );
 
     return res.success('story has been successfully created', {

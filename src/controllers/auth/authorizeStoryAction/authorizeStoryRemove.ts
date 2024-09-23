@@ -6,7 +6,9 @@ type AuthorizeStoryRemove = (authUserMembership: Project['authUserMembership']) 
 const authorizeStoryRemove: AuthorizeStoryRemove = (authUserMembership) => {
   if (
     !authUserMembership ||
-    (!authUserMembership.isProjectAdmin && !authUserMembership.isProjectManager)
+    (!authUserMembership.isProjectAdmin &&
+      !authUserMembership.isProjectManager &&
+      !authUserMembership.isProjectDeveloper)
   ) {
     throw new AuthorizationError(
       'you do not have permission to remove stories for this project',

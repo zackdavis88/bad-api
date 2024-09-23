@@ -56,4 +56,5 @@ export interface StoryData {
   updatedOn?: Date | null;
   createdBy: Pick<UserData, 'username' | 'displayName'> | null;
   updatedBy?: Pick<UserData, 'username' | 'displayName'> | null;
+  ownedBy?: Pick<UserData, 'username' | 'displayName'> | null;
 }

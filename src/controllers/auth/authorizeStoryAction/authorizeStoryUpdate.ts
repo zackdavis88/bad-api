@@ -6,7 +6,9 @@ type AuthorizeStoryUpdate = (authUserMembership: Project['authUserMembership']) 
 const authorizeStoryUpdate: AuthorizeStoryUpdate = (authUserMembership) => {
   if (
     !authUserMembership ||
-    (!authUserMembership.isProjectAdmin && !authUserMembership.isProjectManager)
+    (!authUserMembership.isProjectAdmin &&
+      !authUserMembership.isProjectManager &&
+      !authUserMembership.isProjectDeveloper)
   ) {
     throw new AuthorizationError(
       'you do not have permission to update stories for this project',

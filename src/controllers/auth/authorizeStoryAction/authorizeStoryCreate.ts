@@ -6,7 +6,9 @@ type AuthorizeStoryCreate = (authUserMembership: Project['authUserMembership']) 
 const authorizeStoryCreate: AuthorizeStoryCreate = (authUserMembership) => {
   if (
     !authUserMembership ||
-    (!authUserMembership.isProjectAdmin && !authUserMembership.isProjectManager)
+    (!authUserMembership.isProjectAdmin &&
+      !authUserMembership.isProjectManager &&
+      !authUserMembership.isProjectDeveloper)
   ) {
     throw new AuthorizationError(
       'you do not have permission to create stories for this project',

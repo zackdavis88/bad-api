@@ -295,7 +295,7 @@ describe('Project Update', () => {
             return done(err);
           }
 
-          // Ensure the project was actually update.
+          // Ensure the project was actually updated.
           const updatedTestProject = await Project.findOne({
             where: { id: testProject.id, isActive: true },
           });

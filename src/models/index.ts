@@ -119,6 +119,11 @@ export const initializeModels = (sequelize: Sequelize) => {
   User.hasOne(Story, { as: 'updatedStory', foreignKey: 'updatedById' });
   Story.belongsTo(User, { as: 'updatedBy' });
 
+  // Story -> User associations: ownedBy
+  User.hasMany(Story, { as: 'ownedStories', foreignKey: 'ownedById' });
+  User.hasOne(Story, { as: 'ownedStory', foreignKey: 'ownedById' });
+  Story.belongsTo(User, { as: 'ownedBy' });
+
   // Story -> Project associations: stories
   Project.hasMany(Story, {
     as: 'stories',

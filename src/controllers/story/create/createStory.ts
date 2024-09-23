@@ -7,14 +7,23 @@ type CreateStory = (
   title: string,
   details: string,
   status?: Status | null,
+  ownedBy?: User | null,
 ) => Promise<StoryData>;
 
-const createStory: CreateStory = async (project, user, title, details, status) => {
+const createStory: CreateStory = async (
+  project,
+  user,
+  title,
+  details,
+  status,
+  ownedBy,
+) => {
   const story = await project.createStory({
     title,
     details,
     statusId: status?.id,
     createdById: user.id,
+    ownedById: ownedBy?.id,
   });
 
   return {
@@ -37,6 +46,13 @@ const createStory: CreateStory = async (project, user, title, details, status) =
       username: user.username,
       displayName: user.displayName,
     },
+    ownedBy:
+      ownedBy ?
+        {
+          username: ownedBy.username,
+          displayName: ownedBy.displayName,
+        }
+      : null,
   };
 };
 

@@ -29,6 +29,10 @@ class Story extends Model<InferAttributes<Story>, InferCreationAttributes<Story>
   declare updatedBy: NonAttribute<User | null>;
   declare updatedOn: CreationOptional<Date | null>;
 
+  declare getOwnedBy: BelongsToGetAssociationMixin<User>;
+  declare ownedById: ForeignKey<User['id'] | null>;
+  declare ownedBy: NonAttribute<User | null>;
+
   // Project associations - BelongsTo
   declare getProject: BelongsToGetAssociationMixin<Project>;
   declare projectId: ForeignKey<Project['id']>;

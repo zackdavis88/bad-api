@@ -11,7 +11,7 @@ const validateStatus: ValidateStatus = async (project, statusId) => {
   }
 
   if (typeof statusId !== 'string') {
-    throw new ValidationError('statusId must be a string');
+    throw new ValidationError('status must be a string');
   }
 
   getOneStatusValidation(statusId);
