@@ -22,7 +22,10 @@ const configureStoryRoutes = (router: Router) => {
       ProjectController.getProjectMiddleware,
       StoryController.getStoryMiddleware,
     )
-    .post(AuthController.authorizeStoryAction(AuthorizationAction.UPDATE))
+    .post(
+      AuthController.authorizeStoryAction(AuthorizationAction.UPDATE),
+      StoryController.update,
+    )
     .get(
       AuthController.authorizeStoryAction(AuthorizationAction.READ),
       StoryController.getOne,

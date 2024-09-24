@@ -40,7 +40,7 @@ class Story extends Model<InferAttributes<Story>, InferCreationAttributes<Story>
 
   // Status associations - BelongsTo
   declare getStatus: BelongsToGetAssociationMixin<Status>;
-  declare statusId: ForeignKey<Status['id']>;
+  declare statusId: ForeignKey<Status['id'] | null>;
   declare status: NonAttribute<Status>;
 }
 
