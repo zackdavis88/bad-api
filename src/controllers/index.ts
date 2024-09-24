@@ -3,3 +3,4 @@ export { default as AuthController } from './auth';
 export { default as ProjectController } from './project';
 export { default as MembershipController } from './membership';
 export { default as StatusController } from './status';
+export { default as StoryController } from './story';

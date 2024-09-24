@@ -10,7 +10,7 @@ import {
   configureRoutes,
   initializeDatabaseConnection,
 } from './utils';
-import { User, Project, Membership, Status } from 'src/models';
+import { User, Project, Membership, Status, Story } from 'src/models';
 
 // Extend the types availble on the Express request/response objects.
 declare global {
@@ -21,6 +21,7 @@ declare global {
       project: Project;
       membership: Membership;
       status: Status;
+      story: Story;
     }
     interface Response {
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */

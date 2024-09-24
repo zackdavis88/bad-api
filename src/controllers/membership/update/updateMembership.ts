@@ -5,7 +5,11 @@ type UpdateMembership = (
   authUser: User,
   project: Project,
   membership: Membership,
-  roles: { isProjectAdmin: unknown; isProjectManager: unknown },
+  roles: {
+    isProjectAdmin: unknown;
+    isProjectManager: unknown;
+    isProjectDeveloper: unknown;
+  },
 ) => Promise<MembershipData>;
 
 const updateMembership: UpdateMembership = async (
@@ -20,6 +24,10 @@ const updateMembership: UpdateMembership = async (
 
   if (typeof roles.isProjectManager === 'boolean') {
     membership.isProjectManager = roles.isProjectManager;
+  }
+
+  if (typeof roles.isProjectDeveloper === 'boolean') {
+    membership.isProjectDeveloper = roles.isProjectDeveloper;
   }
 
   membership.updatedById = authUser.id;
@@ -38,6 +46,7 @@ const updateMembership: UpdateMembership = async (
     },
     isProjectAdmin: membership.isProjectAdmin,
     isProjectManager: membership.isProjectManager,
+    isProjectDeveloper: membership.isProjectDeveloper,
     createdOn: membership.createdOn,
     createdBy:
       membership.createdById && membership.createdBy ?

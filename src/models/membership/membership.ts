@@ -19,6 +19,7 @@ class Membership extends Model<
   declare id: CreationOptional<string>;
   declare isProjectAdmin: CreationOptional<boolean>;
   declare isProjectManager: CreationOptional<boolean>;
+  declare isProjectDeveloper: CreationOptional<boolean>;
 
   // User associations - BelongsTo
   declare getCreatedBy: BelongsToGetAssociationMixin<User>;
@@ -68,6 +69,10 @@ export const initializeMembership = (sequelize: Sequelize) => {
         defaultValue: false,
       },
       isProjectManager: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+      },
+      isProjectDeveloper: {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },

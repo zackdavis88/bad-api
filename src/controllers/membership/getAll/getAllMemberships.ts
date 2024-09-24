@@ -28,6 +28,7 @@ const getAllMemberships: GetAllMemberships = async (project, paginationData) => 
     },
     isProjectAdmin: membership.isProjectAdmin,
     isProjectManager: membership.isProjectManager,
+    isProjectDeveloper: membership.isProjectDeveloper,
     createdOn: membership.createdOn,
     createdBy:
       membership.createdById && membership.createdBy ?

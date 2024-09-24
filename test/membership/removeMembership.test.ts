@@ -12,14 +12,17 @@ describe('Membership Remove', () => {
     let projectAdminMember2: User;
     let projectManagerMember: User;
     let projectViewerMember: User;
+    let projectDeveloperMember: User;
     let nonMember: User;
     let testProject: Project;
     let inactiveProject: Project;
     let testAdminMembership: Membership;
     let testManagerMembership: Membership;
+    let testDeveloperMembership: Membership;
     let testViewerMembership: Membership;
     let adminAuthToken: string;
     let managerAuthToken: string;
+    let developerAuthToken: string;
     let viewerAuthToken: string;
     let nonMemberAuthToken: string;
 
@@ -27,6 +30,7 @@ describe('Membership Remove', () => {
       projectAdminMember1 = await testHelper.createTestUser();
       projectAdminMember2 = await testHelper.createTestUser();
       projectManagerMember = await testHelper.createTestUser();
+      projectDeveloperMember = await testHelper.createTestUser();
       projectViewerMember = await testHelper.createTestUser();
       nonMember = await testHelper.createTestUser();
 
@@ -47,6 +51,11 @@ describe('Membership Remove', () => {
         createdById: projectAdminMember2.id,
         isProjectManager: true,
       });
+      testDeveloperMembership = await testProject.createMembership({
+        userId: projectDeveloperMember.id,
+        createdById: projectAdminMember1.id,
+        isProjectDeveloper: true,
+      });
       testViewerMembership = await testProject.createMembership({
         userId: projectViewerMember.id,
         createdById: projectAdminMember1.id,
@@ -54,6 +63,7 @@ describe('Membership Remove', () => {
 
       adminAuthToken = testHelper.generateToken(projectAdminMember1);
       managerAuthToken = testHelper.generateToken(projectManagerMember);
+      developerAuthToken = testHelper.generateToken(projectDeveloperMember);
       viewerAuthToken = testHelper.generateToken(projectViewerMember);
       nonMemberAuthToken = testHelper.generateToken(nonMember);
     });
@@ -175,6 +185,18 @@ describe('Membership Remove', () => {
       );
     });
 
+    it('should reject requests when removing a membership as a developer', (done) => {
+      apiRoute = `/projects/${testProject.id}/memberships/${testViewerMembership.id}`;
+      request(serverUrl).delete(apiRoute).set('x-auth-token', developerAuthToken).expect(
+        401,
+        {
+          error: 'you do not have permission to remove memberships for this project',
+          errorType: ErrorTypes.AUTHORIZATION,
+        },
+        done,
+      );
+    });
+
     it('should reject requests when removing a membership as a viewer', (done) => {
       apiRoute = `/projects/${testProject.id}/memberships/${testManagerMembership.id}`;
       request(serverUrl).delete(apiRoute).set('x-auth-token', viewerAuthToken).expect(
@@ -254,6 +276,7 @@ describe('Membership Remove', () => {
             },
             isProjectAdmin: true,
             isProjectManager: false,
+            isProjectDeveloper: false,
             createdOn: testAdminMembership.createdOn.toISOString(),
             createdBy: {
               username: projectAdminMember1.username,
@@ -306,6 +329,7 @@ describe('Membership Remove', () => {
             },
             isProjectAdmin: false,
             isProjectManager: true,
+            isProjectDeveloper: false,
             createdOn: testManagerMembership.createdOn.toISOString(),
             createdBy: {
               username: projectAdminMember2.username,
@@ -331,6 +355,64 @@ describe('Membership Remove', () => {
             userId: projectManagerMember.id,
             createdById: projectAdminMember2.id,
             isProjectManager: true,
+          });
+
+          done();
+        });
+    });
+
+    it('should successfully remove developer memberships as an admin', (done) => {
+      apiRoute = `/projects/${testProject.id}/memberships/${testDeveloperMembership.id}`;
+      request(serverUrl)
+        .delete(apiRoute)
+        .set('x-auth-token', adminAuthToken)
+        .send({ confirm: true })
+        .expect(200)
+        .end(async (err, res) => {
+          if (err) {
+            return done(err);
+          }
+
+          const { message, membership } = res.body;
+          expect(message).toBe('membership has been successfully removed');
+          expect(membership).toEqual({
+            id: testDeveloperMembership.id,
+            user: {
+              username: projectDeveloperMember.username,
+              displayName: projectDeveloperMember.displayName,
+            },
+            project: {
+              id: testProject.id,
+              name: testProject.name,
+            },
+            isProjectAdmin: false,
+            isProjectManager: false,
+            isProjectDeveloper: true,
+            createdOn: testDeveloperMembership.createdOn.toISOString(),
+            createdBy: {
+              username: projectAdminMember1.username,
+              displayName: projectAdminMember1.displayName,
+            },
+            updatedOn: null,
+            updatedBy: null,
+            deletedOn: membership.deletedOn,
+            deletedBy: {
+              username: projectAdminMember1.username,
+              displayName: projectAdminMember1.displayName,
+            },
+          });
+
+          // Confirm that the membership is actually removed
+          const removedMembership = await testProject.getMembership({
+            where: { id: testDeveloperMembership.id },
+          });
+          expect(removedMembership).toBe(null);
+
+          // Restore the developer membership for other tests to use
+          testDeveloperMembership = await testProject.createMembership({
+            userId: projectDeveloperMember.id,
+            createdById: projectAdminMember1.id,
+            isProjectDeveloper: true,
           });
 
           done();
@@ -363,6 +445,7 @@ describe('Membership Remove', () => {
             },
             isProjectAdmin: false,
             isProjectManager: false,
+            isProjectDeveloper: false,
             createdOn: testViewerMembership.createdOn.toISOString(),
             createdBy: {
               username: projectAdminMember1.username,
@@ -419,6 +502,7 @@ describe('Membership Remove', () => {
             },
             isProjectAdmin: false,
             isProjectManager: true,
+            isProjectDeveloper: false,
             createdOn: testManagerMembership.createdOn.toISOString(),
             createdBy: {
               username: projectAdminMember2.username,
@@ -444,6 +528,64 @@ describe('Membership Remove', () => {
             userId: projectManagerMember.id,
             createdById: projectAdminMember2.id,
             isProjectManager: true,
+          });
+
+          done();
+        });
+    });
+
+    it('should successfully remove developer memberships as a manager', (done) => {
+      apiRoute = `/projects/${testProject.id}/memberships/${testDeveloperMembership.id}`;
+      request(serverUrl)
+        .delete(apiRoute)
+        .set('x-auth-token', managerAuthToken)
+        .send({ confirm: true })
+        .expect(200)
+        .end(async (err, res) => {
+          if (err) {
+            return done(err);
+          }
+
+          const { message, membership } = res.body;
+          expect(message).toBe('membership has been successfully removed');
+          expect(membership).toEqual({
+            id: testDeveloperMembership.id,
+            user: {
+              username: projectDeveloperMember.username,
+              displayName: projectDeveloperMember.displayName,
+            },
+            project: {
+              id: testProject.id,
+              name: testProject.name,
+            },
+            isProjectAdmin: false,
+            isProjectManager: false,
+            isProjectDeveloper: true,
+            createdOn: testDeveloperMembership.createdOn.toISOString(),
+            createdBy: {
+              username: projectAdminMember1.username,
+              displayName: projectAdminMember1.displayName,
+            },
+            updatedOn: null,
+            updatedBy: null,
+            deletedOn: membership.deletedOn,
+            deletedBy: {
+              username: projectManagerMember.username,
+              displayName: projectManagerMember.displayName,
+            },
+          });
+
+          // Confirm that the membership is actually removed
+          const removedMembership = await testProject.getMembership({
+            where: { id: testDeveloperMembership.id },
+          });
+          expect(removedMembership).toBe(null);
+
+          // Restore the developer membership for other tests to use
+          testDeveloperMembership = await testProject.createMembership({
+            userId: projectDeveloperMember.id,
+            createdById: projectAdminMember2.id,
+            isProjectDeveloper: true,
           });
 
           done();
@@ -476,6 +618,7 @@ describe('Membership Remove', () => {
             },
             isProjectAdmin: false,
             isProjectManager: false,
+            isProjectDeveloper: false,
             createdOn: testViewerMembership.createdOn.toISOString(),
             createdBy: {
               username: projectAdminMember1.username,

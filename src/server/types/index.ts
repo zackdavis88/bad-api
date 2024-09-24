@@ -31,6 +31,7 @@ export interface MembershipData {
   project: Pick<ProjectData, 'id' | 'name'>;
   isProjectAdmin: boolean;
   isProjectManager: boolean;
+  isProjectDeveloper: boolean;
   createdOn: Date;
   updatedOn?: Date | null;
   deletedOn?: Date;
@@ -43,4 +44,17 @@ export interface StatusData {
   id: string;
   name: string;
   project: Pick<ProjectData, 'id' | 'name'>;
+}
+
+export interface StoryData {
+  id: string;
+  project: Pick<ProjectData, 'id' | 'name'>;
+  title: string;
+  details: string | null;
+  status?: Omit<StatusData, 'project'> | null;
+  createdOn: Date;
+  updatedOn?: Date | null;
+  createdBy: Pick<UserData, 'username' | 'displayName'> | null;
+  updatedBy?: Pick<UserData, 'username' | 'displayName'> | null;
+  ownedBy?: Pick<UserData, 'username' | 'displayName'> | null;
 }
