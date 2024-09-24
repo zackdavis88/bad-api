@@ -30,7 +30,10 @@ const configureStoryRoutes = (router: Router) => {
       AuthController.authorizeStoryAction(AuthorizationAction.READ),
       StoryController.getOne,
     )
-    .delete(AuthController.authorizeStoryAction(AuthorizationAction.DELETE));
+    .delete(
+      AuthController.authorizeStoryAction(AuthorizationAction.DELETE),
+      StoryController.remove,
+    );
 };
 
 export default configureStoryRoutes;

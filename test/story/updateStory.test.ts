@@ -124,6 +124,30 @@ describe('Story Update', () => {
       );
     });
 
+    it('should reject requests when storyId is not a valid UUID', (done) => {
+      apiRoute = `/projects/${testProject.id}/stories/wrong`;
+      request(serverUrl).post(apiRoute).set('x-auth-token', adminAuthToken).expect(
+        400,
+        {
+          error: 'requested story id is not valid',
+          errorType: ErrorTypes.VALIDATION,
+        },
+        done,
+      );
+    });
+
+    it('should reject requests when the requested story does not exist', (done) => {
+      apiRoute = `/projects/${testProject.id}/stories/${testHelper.generateUUID()}`;
+      request(serverUrl).post(apiRoute).set('x-auth-token', adminAuthToken).expect(
+        404,
+        {
+          error: 'requested story not found',
+          errorType: ErrorTypes.NOT_FOUND,
+        },
+        done,
+      );
+    });
+
     it('should reject requests when the authenticated user is not a project member', (done) => {
       request(serverUrl).post(apiRoute).set('x-auth-token', nonMemberAuthToken).expect(
         401,
