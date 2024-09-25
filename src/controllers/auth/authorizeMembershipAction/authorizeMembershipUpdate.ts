@@ -1,20 +1,19 @@
-import { Membership, Project } from 'src/models';
+import { Project } from 'src/models';
 import { AuthorizationError } from 'src/server/utils/errors';
 
 type AuthorizeMembershipUpdate = (
   authUserMembership: Project['authUserMembership'],
-  requestedMembership: Membership,
+  requestedMembershipIsAdmin: boolean,
   isProjectAdminInputValue: unknown,
 ) => void;
 
 const authorizeMembershipUpdate: AuthorizeMembershipUpdate = (
   authUserMembership,
-  requestedMembership,
+  requestedMembershipIsAdmin,
   isProjectAdminInputValue,
 ) => {
   const isAddingAdminPrivileges = isProjectAdminInputValue === true;
   const isRemovingAdminPrivileges = isProjectAdminInputValue === false;
-  const requestedMembershipIsAdmin = requestedMembership.isProjectAdmin === true;
 
   // If the existing membership is NOT admin, you need to be admin to add it.
   if (
