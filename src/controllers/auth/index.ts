@@ -6,6 +6,7 @@ import { default as authorizeProjectAction } from './authorizeProjectAction';
 import { default as authorizeMembershipAction } from './authorizeMembershipAction';
 import { default as authorizeStatusAction } from './authorizeStatusAction';
 import { default as authorizeStoryAction } from './authorizeStoryAction';
+import { default as getProjectPermissions } from './getProjectPermissions';
 
 export default {
   generateToken,
@@ -16,4 +17,5 @@ export default {
   authorizeMembershipAction,
   authorizeStatusAction,
   authorizeStoryAction,
+  getProjectPermissions,
 };

@@ -16,14 +16,17 @@ const authorizeMembershipActionFlow = (action: AuthorizationAction) => {
       if (action === AuthorizationAction.UPDATE) {
         authorizeMembershipUpdate(
           req.project.authUserMembership,
-          req.membership,
+          req.membership.isProjectAdmin,
           req.body.isProjectAdmin,
         );
         return next();
       }
 
       if (action === AuthorizationAction.DELETE) {
-        authorizeMembershipRemove(req.project.authUserMembership, req.membership);
+        authorizeMembershipRemove(
+          req.project.authUserMembership,
+          req.membership.isProjectAdmin,
+        );
         return next();
       }
 

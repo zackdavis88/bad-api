@@ -1,17 +1,15 @@
-import { Membership, Project } from 'src/models';
+import { Project } from 'src/models';
 import { AuthorizationError } from 'src/server/utils/errors';
 
 type AuthorizeMembershipRemove = (
   authUserMembership: Project['authUserMembership'],
-  requestedMembership: Membership,
+  requestedMembershipIsAdmin: boolean,
 ) => void;
 
 const authorizeMembershipRemove: AuthorizeMembershipRemove = (
   authUserMembership,
-  requestedMembership,
+  requestedMembershipIsAdmin,
 ) => {
-  const requestedMembershipIsAdmin = requestedMembership.isProjectAdmin === true;
-
   if (
     requestedMembershipIsAdmin &&
     (!authUserMembership || !authUserMembership.isProjectAdmin)

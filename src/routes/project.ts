@@ -21,6 +21,11 @@ const configureProjectRoutes = (router: Router) => {
       AuthController.authorizeProjectAction(AuthorizationAction.DELETE),
       ProjectController.remove,
     );
+
+  router
+    .route('/projects/:projectId/permissions')
+    .all(AuthController.authenticateToken, ProjectController.getProjectMiddleware)
+    .get(AuthController.getProjectPermissions);
 };
 
 export default configureProjectRoutes;
