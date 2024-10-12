@@ -1,8 +1,7 @@
-import jwt from 'jsonwebtoken';
 import { User } from 'src/models';
-import { SECRET } from 'src/config/auth';
 import { AuthenticationError } from 'src/server/utils/errors';
 import { UserData } from 'src/server/types';
+import signJwtToken from 'src/controllers/auth/utils/signJwtToken';
 
 interface UserDataWithToken extends UserData {
   token: string;
@@ -26,13 +25,7 @@ const generateToken: GenerateToken = async (username, password) => {
     throw new AuthenticationError('username and password combination is invalid');
   }
 
-  const tokenData = {
-    id: user.id,
-    apiKey: user.apiKey,
-  };
-
-  const jwtOptions = { expiresIn: '10h' };
-  const token = jwt.sign(tokenData, SECRET, jwtOptions);
+  const token = signJwtToken(user);
 
   return {
     token,

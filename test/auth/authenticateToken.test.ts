@@ -136,7 +136,7 @@ describe('Authenticate AuthToken', () => {
       );
     });
 
-    it('should successfully authenticate a token', (done) => {
+    it('should successfully authenticate a token and send a refresh token', (done) => {
       const jwtToken = testHelper.generateToken(testUser);
       request(serverUrl)
         .get(apiRoute)
@@ -155,6 +155,11 @@ describe('Authenticate AuthToken', () => {
             createdOn: testUser.createdOn.toISOString(),
             updatedOn: null,
           });
+
+          // This endpoint should return a fresh auth token as well.
+          const refreshToken = res.headers['x-auth-token'];
+          expect(refreshToken).toBeTruthy();
+          expect(refreshToken).not.toBe(jwtToken);
           done();
         });
     });
