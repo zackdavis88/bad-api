@@ -31,15 +31,19 @@ jobs:
       - name: Install NodeJS
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-      
+          node-version: 20
+
+      # Install pnpm
+      - name: 'Install pnpm'
+        run: 'npm install -g pnpm'
+
       # Install node_modules
       - name: Install node_modules
-        run: npm install
+        run: pnpm install
 
       # Ensure linter passes
       - name: Run eslint
-        run: npx eslint src
+        run: pnpm eslint src
 
       # Inject configs that are not tracked in git
       - name: Create db config file
@@ -58,12 +62,12 @@ jobs:
 
       # Ensure the app can be built
       - name: Build app
-        run: npm run build
+        run: pnpm build
 
       # Start the server and wait for it to start listening
       - name: Start server and wait for it to be listening
-        run: npm run start:prod & timeout 30 sh -c 'until nc -z $0 $1; do sleep 1; done' localhost 3000
+        run: pnpm start:prod & timeout 30 sh -c 'until nc -z $0 $1; do sleep 1; done' localhost 3000
 
       # Run integration tests
       - name: Run integration tests
-        run: npx jest --verbose --detectOpenHandles
+        run: pnpm jest --verbose --detectOpenHandles

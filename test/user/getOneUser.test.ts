@@ -10,11 +10,18 @@ describe('User GetOne', () => {
   describe(`GET ${apiRoute}`, () => {
     let authenticatedUser: User;
     let authToken: string;
+    let inactiveUser: User;
     let testUser: User;
 
     beforeAll(async () => {
       authenticatedUser = await testHelper.createTestUser();
       testUser = await testHelper.createTestUser();
+
+      inactiveUser = await testHelper.createTestUser();
+      inactiveUser.isActive = false;
+      inactiveUser.deletedOn = new Date();
+      await inactiveUser.save();
+
       authToken = testHelper.generateToken(authenticatedUser);
     });
 
@@ -37,8 +44,20 @@ describe('User GetOne', () => {
       );
     });
 
-    it('should reject requests when the requested user is not found', (done) => {
+    it('should reject requests when the requested user does not exist', (done) => {
       apiRoute = '/users/u$erdoesntexist';
+      request(serverUrl).get(apiRoute).set('x-auth-token', authToken).expect(
+        404,
+        {
+          error: 'requested user not found',
+          errorType: ErrorTypes.NOT_FOUND,
+        },
+        done,
+      );
+    });
+
+    it('should reject requests when the requested user is not active', (done) => {
+      apiRoute = `/users/${inactiveUser.username}`;
       request(serverUrl).get(apiRoute).set('x-auth-token', authToken).expect(
         404,
         {
@@ -61,10 +80,11 @@ describe('User GetOne', () => {
 
           const { message, user } = res.body;
           expect(message).toBe('user has been successfully retrieved');
-          expect(user).toBeTruthy();
-          expect(user.username).toBe(testUser.username);
-          expect(user.displayName).toBe(testUser.displayName);
-          expect(user.createdOn).toBe(testUser.createdOn.toISOString());
+          expect(user).toEqual({
+            username: testUser.username,
+            displayName: testUser.displayName,
+            createdOn: testUser.createdOn.toISOString(),
+          });
           done();
         });
     });

@@ -8,9 +8,13 @@ import {
   CreationOptional,
   DataTypes,
   NonAttribute,
-  // HasManyGetAssociationsMixin,
+  HasManyGetAssociationsMixin,
+  HasManyCountAssociationsMixin,
+  HasOneGetAssociationMixin,
 } from 'sequelize';
-// import Membership from 'src/models/membership/membership';
+import Project from 'src/models/project/project';
+import Membership from 'src/models/membership/membership';
+import Story from 'src/models/story/story';
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id: CreationOptional<string>;
@@ -20,10 +24,44 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare hash: string;
   declare apiKey: CreationOptional<string>;
   declare createdOn: CreationOptional<Date>;
-  declare updatedOn: CreationOptional<Date> | null;
-  declare deletedOn: CreationOptional<Date> | null;
+  declare updatedOn: CreationOptional<Date | null>;
+  declare deletedOn: CreationOptional<Date | null>;
 
-  // declare getMemberships: HasManyGetAssociationsMixin<Membership>;
+  // Project associations - HasMany
+  declare getCreatedProjects: HasManyGetAssociationsMixin<Project>;
+  declare countCreatedProjects: HasManyCountAssociationsMixin;
+  declare getUpdatedProjects: HasManyGetAssociationsMixin<Project>;
+  declare countUpdatedProjects: HasManyCountAssociationsMixin;
+  declare getDeletedProjects: HasManyGetAssociationsMixin<Project>;
+  declare countDeletedProjects: HasManyCountAssociationsMixin;
+
+  // Project associations - HasOne
+  declare getCreatedProject: HasOneGetAssociationMixin<Project>;
+  declare getUpdatedProject: HasOneGetAssociationMixin<Project>;
+  declare getDeletedProject: HasOneGetAssociationMixin<Project>;
+
+  // Membership associations - HasMany
+  declare getCreatedMemberships: HasManyGetAssociationsMixin<Membership>;
+  declare countCreatedMemberships: HasManyCountAssociationsMixin;
+  declare getUpdatedMemberships: HasManyGetAssociationsMixin<Membership>;
+  declare countUpdatedMemberships: HasManyCountAssociationsMixin;
+  declare getMemberships: HasManyGetAssociationsMixin<Membership>;
+  declare countMemberships: HasManyCountAssociationsMixin;
+
+  // Membership associations - HasOne
+  declare getCreatedMembership: HasOneGetAssociationMixin<Membership>;
+  declare getUpdatedMembership: HasOneGetAssociationMixin<Membership>;
+  declare getMembership: HasOneGetAssociationMixin<Membership>;
+
+  // Story associations - HasMany
+  declare getCreatedStories: HasManyGetAssociationsMixin<Story>;
+  declare countCreatedStories: HasManyCountAssociationsMixin;
+  declare getUpdatedStories: HasManyGetAssociationsMixin<Story>;
+  declare countUpdatedStories: HasManyCountAssociationsMixin;
+
+  // Story associations - HasOne
+  declare getCreatedStory: HasOneGetAssociationMixin<Story>;
+  declare getUpdatedStory: HasOneGetAssociationMixin<Story>;
 
   static generateHash(password: string): NonAttribute<string> {
     return bcrypt.hashSync(password, SALT_ROUNDS);

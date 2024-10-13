@@ -10,7 +10,7 @@ import {
   configureRoutes,
   initializeDatabaseConnection,
 } from './utils';
-import { User } from 'src/models';
+import { User, Project, Membership, Status, Story } from 'src/models';
 
 // Extend the types availble on the Express request/response objects.
 declare global {
@@ -18,6 +18,10 @@ declare global {
   namespace Express {
     interface Request {
       user: User;
+      project: Project;
+      membership: Membership;
+      status: Status;
+      story: Story;
     }
     interface Response {
       /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
@@ -66,7 +70,7 @@ initializeDatabaseConnection().then(() => {
   // Start the server.
   server.listen(PORT, () => {
     console.log(
-      'Bad JIRA listening on port %s using %s protocol',
+      'Bad API listening on port %s using %s protocol',
       PORT,
       useHttps ? 'https' : 'http',
     );
