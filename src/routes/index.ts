@@ -5,3 +5,4 @@ export { default as configureProjectRoutes } from './project';
 export { default as configureMembershipRoutes } from './membership';
 export { default as configureStatusRoutes } from './status';
 export { default as configureStoryRoutes } from './story';
+export { default as configureDashboardRoutes } from './dashboard';
