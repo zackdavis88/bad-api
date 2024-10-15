@@ -12,7 +12,7 @@ const getUserProjects: GetUserProjects = async (user, paginationData) => {
   const membershipProjects = await user.getMemberships({
     limit: itemsPerPage,
     offset: pageOffset,
-    order: [['createdOn', 'ASC']],
+    order: [['createdOn', 'DESC']],
     include: [
       {
         model: Project,
