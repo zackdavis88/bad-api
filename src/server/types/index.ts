@@ -18,6 +18,10 @@ export interface ProjectData {
   deletedBy?: Pick<UserData, 'username' | 'displayName'> | null;
 }
 
+export interface DashboardProjectData extends ProjectData {
+  role: 'Admin' | 'Manager' | 'Developer' | 'Viewer';
+}
+
 export enum AuthorizationAction {
   CREATE = 'create',
   READ = 'read',
