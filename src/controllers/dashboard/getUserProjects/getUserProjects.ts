@@ -1,14 +1,26 @@
 import { Project, User } from 'src/models';
 import { DashboardProjectData } from 'src/server/types';
 import { PaginationData } from 'src/controllers/validationUtils';
+import Sequelize, { WhereOptions } from 'sequelize';
+import { Request } from 'express';
 
 type GetUserProjects = (
   user: User,
   paginationData: PaginationData,
+  queryString: Request['query'],
 ) => Promise<DashboardProjectData[]>;
 
-const getUserProjects: GetUserProjects = async (user, paginationData) => {
+const getUserProjects: GetUserProjects = async (user, paginationData, queryString) => {
   const { itemsPerPage, pageOffset } = paginationData;
+  const projectWhereOptions: WhereOptions = {
+    isActive: true,
+  };
+  if (queryString.nameFilter) {
+    projectWhereOptions.name = {
+      [Sequelize.Op.iLike]: `%${queryString.nameFilter}%`,
+    };
+  }
+
   const membershipProjects = await user.getMemberships({
     limit: itemsPerPage,
     offset: pageOffset,
@@ -16,7 +28,7 @@ const getUserProjects: GetUserProjects = async (user, paginationData) => {
     include: [
       {
         model: Project,
-        where: { isActive: true },
+        where: projectWhereOptions,
         as: 'project',
         required: true,
         include: [{ model: User, as: 'createdBy', where: { isActive: true } }],

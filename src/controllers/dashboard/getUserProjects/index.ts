@@ -5,7 +5,7 @@ import getUserProjects from './getUserProjects';
 const getUserProjectsFlow = async (req: Request, res: Response) => {
   const user = req.user;
   const paginationData = await getUserProjectsValidation(user, req.query);
-  const projects = await getUserProjects(user, paginationData);
+  const projects = await getUserProjects(user, paginationData, req.query);
 
   return res.success('dashboard projects have been successfully retrieved', {
     page: paginationData.page,
