@@ -216,5 +216,135 @@ describe('Membership GetAll', () => {
           done();
         });
     });
+
+    it('should successfully return a filtered list of memberships for a project', (done) => {
+      request(serverUrl)
+        .get(`${apiRoute}?usernameFilter=${projectMember8.displayName}`)
+        .set('x-auth-token', authToken)
+        .expect(200)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+
+          const { message, ...membershipListData } = res.body;
+          expect(message).toBe('membership list has been successfully retrieved');
+          expect(membershipListData).toEqual({
+            page: 1,
+            totalItems: 1,
+            totalPages: 1,
+            itemsPerPage: 10,
+            project: {
+              id: testProject.id,
+              name: testProject.name,
+            },
+            memberships: [
+              {
+                id: expectedMembership3.id,
+                user: {
+                  username: projectMember8.username,
+                  displayName: projectMember8.displayName,
+                },
+                isProjectAdmin: false,
+                isProjectManager: false,
+                isProjectDeveloper: false,
+                createdOn: expectedMembership3.createdOn.toISOString(),
+                updatedOn: expectedMembership3.updatedOn?.toISOString(),
+                createdBy: {
+                  username: projectMember3.username,
+                  displayName: projectMember3.displayName,
+                },
+                updatedBy: {
+                  username: projectMember1.username,
+                  displayName: projectMember1.displayName,
+                },
+              },
+            ],
+          });
+          done();
+        });
+    });
+
+    it('should successfully return an ordered list of memberships for a project', (done) => {
+      request(serverUrl)
+        .get(`${apiRoute}?createdOnOrder=DESC&itemsPerPage=3&page=1`)
+        .set('x-auth-token', authToken)
+        .expect(200)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+
+          const { message, ...membershipListData } = res.body;
+          expect(message).toBe('membership list has been successfully retrieved');
+          expect(membershipListData).toEqual({
+            page: 1,
+            totalItems: 8,
+            totalPages: 3,
+            itemsPerPage: 3,
+            project: {
+              id: testProject.id,
+              name: testProject.name,
+            },
+            memberships: [
+              {
+                id: expectedMembership3.id,
+                user: {
+                  username: projectMember8.username,
+                  displayName: projectMember8.displayName,
+                },
+                isProjectAdmin: false,
+                isProjectManager: false,
+                isProjectDeveloper: false,
+                createdOn: expectedMembership3.createdOn.toISOString(),
+                updatedOn: expectedMembership3.updatedOn?.toISOString(),
+                createdBy: {
+                  username: projectMember3.username,
+                  displayName: projectMember3.displayName,
+                },
+                updatedBy: {
+                  username: projectMember1.username,
+                  displayName: projectMember1.displayName,
+                },
+              },
+              {
+                id: expectedMembership2.id,
+                user: {
+                  username: projectMember7.username,
+                  displayName: projectMember7.displayName,
+                },
+                isProjectAdmin: false,
+                isProjectManager: true,
+                isProjectDeveloper: false,
+                createdOn: expectedMembership2.createdOn.toISOString(),
+                updatedOn: null,
+                createdBy: {
+                  username: projectMember6.username,
+                  displayName: projectMember6.displayName,
+                },
+                updatedBy: null,
+              },
+              {
+                id: expectedMembership1.id,
+                user: {
+                  username: projectMember6.username,
+                  displayName: projectMember6.displayName,
+                },
+                isProjectAdmin: false,
+                isProjectManager: true,
+                isProjectDeveloper: false,
+                createdOn: expectedMembership1.createdOn.toISOString(),
+                updatedOn: null,
+                createdBy: {
+                  username: projectMember4.username,
+                  displayName: projectMember4.displayName,
+                },
+                updatedBy: null,
+              },
+            ],
+          });
+          done();
+        });
+    });
   });
 });

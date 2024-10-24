@@ -6,7 +6,7 @@ const getAllMembershipsFlow = async (req: Request, res: Response) => {
   try {
     const project = req.project;
     const paginationData = await getAllMembershipsValiation(project, req.query);
-    const memberships = await getAllMemberships(project, paginationData);
+    const memberships = await getAllMemberships(project, paginationData, req.query);
 
     return res.success('membership list has been successfully retrieved', {
       page: paginationData.page,
