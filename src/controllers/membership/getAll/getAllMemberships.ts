@@ -1,22 +1,54 @@
 import { Project, User } from 'src/models';
 import { PaginationData } from 'src/controllers/validationUtils';
 import { MembershipData } from 'src/server/types';
+import { Request } from 'express';
+import { Op, WhereOptions } from 'sequelize';
 
 type GetAllMemberships = (
   project: Project,
   paginationData: PaginationData,
+  queryString: Request['query'],
 ) => Promise<Omit<MembershipData, 'project'>[]>;
 
-const getAllMemberships: GetAllMemberships = async (project, paginationData) => {
+const getAllMemberships: GetAllMemberships = async (
+  project,
+  paginationData,
+  queryString,
+) => {
   const { itemsPerPage, pageOffset } = paginationData;
+  const usernameFilter = queryString.usernameFilter;
+  let userWhereOptions: WhereOptions | undefined = undefined;
+  if (usernameFilter) {
+    userWhereOptions = {
+      username: {
+        [Op.iLike]: `%${usernameFilter}%`,
+      },
+    };
+  }
+
+  // Maybe there is a better way to do this, but this works for now.
+  // Probably need to improve it if more ordering is needed in the future.
+  let createdOnOrder = 'ASC';
+  if (
+    typeof queryString.createdOnOrder === 'string' &&
+    queryString.createdOnOrder.toUpperCase() === 'DESC'
+  ) {
+    createdOnOrder = 'DESC';
+  }
+
   const memberships = await project.getMemberships({
     limit: itemsPerPage,
     offset: pageOffset,
-    order: [['createdOn', 'ASC']],
+    order: [['createdOn', createdOnOrder]],
     include: [
       { model: User.scope('publicAttributes'), as: 'createdBy', required: false },
       { model: User.scope('publicAttributes'), as: 'updatedBy', required: false },
-      { model: User.scope('publicAttributes'), as: 'user' },
+      {
+        model: User.scope('publicAttributes'),
+        as: 'user',
+        where: userWhereOptions,
+        required: true,
+      },
     ],
   });
 
