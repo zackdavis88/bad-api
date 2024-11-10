@@ -2,6 +2,7 @@ import { Request } from 'express';
 import { PaginationData } from 'src/controllers/validationUtils';
 import { Project } from 'src/models';
 import { StatusData } from 'src/server/types';
+import { Op, WhereOptions } from 'sequelize';
 
 type GetAllStatuses = (
   project: Project,
@@ -11,6 +12,16 @@ type GetAllStatuses = (
 
 const getAllStatuses: GetAllStatuses = async (project, paginationData, queryString) => {
   const { itemsPerPage, pageOffset } = paginationData;
+
+  let whereOptions: WhereOptions | undefined = undefined;
+  const nameFilter = queryString.nameFilter;
+  if (nameFilter) {
+    whereOptions = {
+      name: {
+        [Op.iLike]: `%${nameFilter}%`,
+      },
+    };
+  }
 
   let createdOnOrder = 'ASC';
   if (
@@ -24,6 +35,7 @@ const getAllStatuses: GetAllStatuses = async (project, paginationData, queryStri
     limit: itemsPerPage,
     offset: pageOffset,
     order: queryString.createdOnOrder ? [['createdOn', createdOnOrder]] : undefined,
+    where: whereOptions,
   });
 
   return statuses.map((status) => ({
