@@ -34,7 +34,7 @@ const getAllStatuses: GetAllStatuses = async (project, paginationData, queryStri
   const statuses = await project.getStatuses({
     limit: itemsPerPage,
     offset: pageOffset,
-    order: queryString.createdOnOrder ? [['createdOn', createdOnOrder]] : undefined,
+    order: [['createdOn', createdOnOrder]],
     where: whereOptions,
   });
 
