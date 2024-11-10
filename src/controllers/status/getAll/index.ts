@@ -6,7 +6,7 @@ const getAllStatusesFlow = async (req: Request, res: Response) => {
   try {
     const project = req.project;
     const paginationData = await getAllStatusesValiation(project, req.query);
-    const statuses = await getAllStatuses(project, paginationData);
+    const statuses = await getAllStatuses(project, paginationData, req.query);
 
     return res.success('status list has been successfully retrieved', {
       page: paginationData.page,

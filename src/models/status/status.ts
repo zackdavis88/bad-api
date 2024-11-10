@@ -14,6 +14,7 @@ import Project from 'src/models/project/project';
 class Status extends Model<InferAttributes<Status>, InferCreationAttributes<Status>> {
   declare id: CreationOptional<string>;
   declare name: string;
+  declare createdOn: CreationOptional<Date>;
 
   // Project associations - BelongsTo
   declare getProject: BelongsToGetAssociationMixin<Project>;
@@ -34,6 +35,10 @@ export const initializeStatus = (sequelize: Sequelize) => {
       },
       name: {
         type: DataTypes.STRING,
+      },
+      createdOn: {
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
       },
     },
     {
