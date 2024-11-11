@@ -135,5 +135,37 @@ describe('Status GetAll', () => {
           done();
         });
     });
+
+    it('should successfully return a filtered list of statuses for a project', (done) => {
+      request(serverUrl)
+        .get(`${apiRoute}?page=1&itemsPerPage=100&nameFilter=${existingStatus2.name}`)
+        .set('x-auth-token', authToken)
+        .expect(200)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+
+          const { message, project, statuses, ...paginationData } = res.body;
+          expect(message).toBe('status list has been successfully retrieved');
+          expect(project).toEqual({
+            id: testProject.id,
+            name: testProject.name,
+          });
+          expect(paginationData).toEqual({
+            page: 1,
+            totalItems: 1,
+            itemsPerPage: 100,
+            totalPages: 1,
+          });
+          expect(statuses).toEqual([
+            {
+              id: existingStatus2.id,
+              name: existingStatus2.name,
+            },
+          ]);
+          done();
+        });
+    });
   });
 });
