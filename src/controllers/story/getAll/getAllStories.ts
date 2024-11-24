@@ -1,18 +1,39 @@
 import { PaginationData } from 'src/controllers/validationUtils';
 import { Project, Status, User } from 'src/models';
 import { StoryData } from 'src/server/types';
+import { Op, WhereOptions } from 'sequelize';
+import { Request } from 'express';
 
 type GetAllStories = (
   project: Project,
   paginationData: PaginationData,
+  queryString: Request['query'],
 ) => Promise<Omit<StoryData, 'project' | 'details'>[]>;
 
-const getAllStories: GetAllStories = async (project, paginationData) => {
+const getAllStories: GetAllStories = async (project, paginationData, queryString) => {
   const { itemsPerPage, pageOffset } = paginationData;
+  let whereOptions: WhereOptions | undefined = undefined;
+  const titleFilter = queryString.titleFilter;
+  if (titleFilter) {
+    whereOptions = {
+      title: {
+        [Op.iLike]: `%${titleFilter}%`,
+      },
+    };
+  }
+
+  let createdOnOrder = 'ASC';
+  if (
+    typeof queryString.createdOnOrder === 'string' &&
+    queryString.createdOnOrder.toUpperCase() === 'DESC'
+  ) {
+    createdOnOrder = 'DESC';
+  }
+
   const stories = await project.getStories({
     limit: itemsPerPage,
     offset: pageOffset,
-    order: [['createdOn', 'ASC']],
+    order: [['createdOn', createdOnOrder]],
     include: [
       { model: User.scope('publicAttributes'), as: 'ownedBy', required: false },
       { model: User.scope('publicAttributes'), as: 'updatedBy', required: false },
@@ -22,6 +43,7 @@ const getAllStories: GetAllStories = async (project, paginationData) => {
     attributes: {
       exclude: ['details'],
     },
+    where: whereOptions,
   });
 
   return stories.map((story) => ({

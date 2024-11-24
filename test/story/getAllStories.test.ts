@@ -226,5 +226,57 @@ describe('Story GetAll', () => {
           done();
         });
     });
+
+    it('should successfully return a filtered list of stories for a project', (done) => {
+      request(serverUrl)
+        .get(apiRoute)
+        .query({
+          itemsPerPage: 10,
+          page: 1,
+          titleFilter: story2.title,
+        })
+        .set('x-auth-token', adminAuthToken)
+        .expect(200)
+        .end((err, res) => {
+          if (err) {
+            return done(err);
+          }
+
+          const { message, project, stories, ...paginationData } = res.body;
+          expect(message).toBe('story list has been successfully retrieved');
+          expect(project).toEqual({
+            id: testProject.id,
+            name: testProject.name,
+          });
+          expect(paginationData).toEqual({
+            page: 1,
+            totalItems: 1,
+            totalPages: 1,
+            itemsPerPage: 10,
+          });
+          expect(stories).toEqual([
+            {
+              id: story2.id,
+              title: story2.title,
+              createdOn: story2.createdOn.toISOString(),
+              createdBy: {
+                username: managerUser.username,
+                displayName: managerUser.displayName,
+              },
+              updatedOn: null,
+              updatedBy: null,
+              ownedBy: {
+                username: developerUser.username,
+                displayName: developerUser.displayName,
+              },
+              status: {
+                id: existingStatus.id,
+                name: existingStatus.name,
+              },
+            },
+          ]);
+          done();
+        });
+    });
   });
 });
